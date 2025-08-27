@@ -35,6 +35,22 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
+
+    public java.util.List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    @Transactional
+    public void resetPasswordByUserId(Long userId, String newPassword) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteById(Long userId) {
+        userRepository.deleteById(userId);
+    }
 }
 
 

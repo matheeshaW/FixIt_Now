@@ -31,11 +31,13 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ServiceCategory> update(@PathVariable Long id, @RequestBody ServiceCategory category) {
         return ResponseEntity.ok(categoryService.update(id, category));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         categoryService.delete(id);
         return ResponseEntity.noContent().build();

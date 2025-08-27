@@ -6,9 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -45,6 +47,31 @@ public class UserController {
         }
         userService.resetPassword(principal.getUsername(), newPassword);
         return ResponseEntity.ok().build();
+    }
+
+    // ---------- Admin endpoints ----------
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<User>> listUsers() {
+        return ResponseEntity.ok(userService.findAll());
+    }
+
+    @PostMapping("/{userId}/reset-password")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> adminResetPassword(@PathVariable Long userId, @RequestBody Map<String, String> payload) {
+        String newPassword = payload.get("newPassword");
+        if (newPassword == null || newPassword.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        userService.resetPasswordByUserId(userId, newPassword);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        userService.deleteById(userId);
+        return ResponseEntity.noContent().build();
     }
 }
 

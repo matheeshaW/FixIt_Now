@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { getRole } from '../utils/auth';
 
 export default function LoginPage() {
 	const [form, setForm] = useState({ email: '', password: '' });
@@ -17,7 +18,10 @@ export default function LoginPage() {
 		try {
 			const res = await api.post('/api/auth/login', form);
 			localStorage.setItem('token', res.data.token);
-			navigate('/profile');
+			const role = getRole();
+			if (role === 'ADMIN') navigate('/admin');
+			else if (role === 'PROVIDER') navigate('/profile');
+			else navigate('/');
 		} catch (err) {
 			setError('Invalid credentials');
 		}
