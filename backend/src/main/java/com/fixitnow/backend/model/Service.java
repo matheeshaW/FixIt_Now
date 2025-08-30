@@ -21,7 +21,7 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Service {
 
     @Id
@@ -48,6 +48,10 @@ public class Service {
     @Column(name = "service_description")
     private String serviceDescription;
 
+    @NotBlank
+    @Column(name = "province", nullable = false, length = 100)
+    private String province;
+
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false)
     @Column(nullable = false, precision = 10, scale = 2)
@@ -70,7 +74,7 @@ public class Service {
             availabilityStatus = AvailabilityStatus.AVAILABLE;
         }
     }
-    
+
     // Helper method to validate enum values
     public static boolean isValidAvailabilityStatus(String status) {
         try {

@@ -11,6 +11,18 @@ export default function ProviderDashboard() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  const provinces = [
+    "Central Province",
+    "Eastern Province",
+    "North Central Province",
+    "Northern Province",
+    "North Western Province",
+    "Sabaragamuwa Province",
+    "Southern Province",
+    "Uva Province",
+    "Western Province",
+  ];
+
   // Form state for creating service
   const [formData, setFormData] = useState({
     serviceTitle: "",
@@ -18,6 +30,7 @@ export default function ProviderDashboard() {
     categoryId: "",
     price: "",
     availabilityStatus: "AVAILABLE",
+    province: "",
   });
 
   // Fetch services and categories on component mount
@@ -85,6 +98,7 @@ export default function ProviderDashboard() {
         categoryId: parseInt(formData.categoryId),
         price: parseFloat(formData.price),
         availabilityStatus: formData.availabilityStatus,
+        province: formData.province,
       };
 
       const response = await api.post("/api/services", serviceData, {
@@ -236,7 +250,7 @@ export default function ProviderDashboard() {
                 Total Revenue
               </h3>
               <p className="text-3xl font-bold text-purple-600">
-                $
+                Rs.
                 {services
                   .reduce((sum, s) => sum + parseFloat(s.price), 0)
                   .toFixed(2)}
@@ -262,7 +276,7 @@ export default function ProviderDashboard() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold">${service.price}</p>
+                      <p className="font-semibold">Rs.{service.price}</p>
                       <p className="text-sm text-gray-600">
                         {service.availabilityStatus}
                       </p>
@@ -302,7 +316,7 @@ export default function ProviderDashboard() {
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-bold text-blue-600">
-                        ${service.price}
+                        Rs.{service.price}
                       </p>
                       <span
                         className={`px-2 py-1 rounded text-xs ${
@@ -388,7 +402,7 @@ export default function ProviderDashboard() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm mb-1">Price ($) *</label>
+                <label className="block text-sm mb-1">Price (Rs.) *</label>
                 <input
                   type="number"
                   name="price"
@@ -401,6 +415,23 @@ export default function ProviderDashboard() {
                   required
                 />
               </div>
+            </div>
+            <div>
+              <label className="block text-sm mb-1">Province *</label>
+              <select
+                name="province"
+                value={formData.province}
+                onChange={handleInputChange}
+                className="w-full border p-2 rounded"
+                required
+              >
+                <option value="">Select province</option>
+                {provinces.map((province) => (
+                  <option key={province} value={province}>
+                    {province}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm mb-1">Availability Status</label>

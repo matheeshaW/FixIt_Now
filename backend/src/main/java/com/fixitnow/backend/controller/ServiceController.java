@@ -37,22 +37,56 @@ public class ServiceController {
         private Long categoryId;
         private BigDecimal price;
         private String availabilityStatus;
+        private String province;
 
         // Getters and Setters
-        public String getServiceTitle() { return serviceTitle; }
-        public void setServiceTitle(String serviceTitle) { this.serviceTitle = serviceTitle; }
-        
-        public String getServiceDescription() { return serviceDescription; }
-        public void setServiceDescription(String serviceDescription) { this.serviceDescription = serviceDescription; }
-        
-        public Long getCategoryId() { return categoryId; }
-        public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
-        
-        public BigDecimal getPrice() { return price; }
-        public void setPrice(BigDecimal price) { this.price = price; }
-        
-        public String getAvailabilityStatus() { return availabilityStatus; }
-        public void setAvailabilityStatus(String availabilityStatus) { this.availabilityStatus = availabilityStatus; }
+        public String getServiceTitle() {
+            return serviceTitle;
+        }
+
+        public void setServiceTitle(String serviceTitle) {
+            this.serviceTitle = serviceTitle;
+        }
+
+        public String getServiceDescription() {
+            return serviceDescription;
+        }
+
+        public void setServiceDescription(String serviceDescription) {
+            this.serviceDescription = serviceDescription;
+        }
+
+        public Long getCategoryId() {
+            return categoryId;
+        }
+
+        public void setCategoryId(Long categoryId) {
+            this.categoryId = categoryId;
+        }
+
+        public BigDecimal getPrice() {
+            return price;
+        }
+
+        public void setPrice(BigDecimal price) {
+            this.price = price;
+        }
+
+        public String getAvailabilityStatus() {
+            return availabilityStatus;
+        }
+
+        public void setAvailabilityStatus(String availabilityStatus) {
+            this.availabilityStatus = availabilityStatus;
+        }
+
+        public String getProvince() {
+            return province;
+        }
+
+        public void setProvince(String province) {
+            this.province = province;
+        }
     }
 
     public static class UpdateServiceRequest {
@@ -62,88 +96,155 @@ public class ServiceController {
         private BigDecimal price;
         private String availabilityStatus;
 
+        private String province;
+
         // Getters and Setters
-        public String getServiceTitle() { return serviceTitle; }
-        public void setServiceTitle(String serviceTitle) { this.serviceTitle = serviceTitle; }
-        
-        public String getServiceDescription() { return serviceDescription; }
-        public void setServiceDescription(String serviceDescription) { this.serviceDescription = serviceDescription; }
-        
-        public Long getCategoryId() { return categoryId; }
-        public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
-        
-        public BigDecimal getPrice() { return price; }
-        public void setPrice(BigDecimal price) { this.price = price; }
-        
-        public String getAvailabilityStatus() { return availabilityStatus; }
-        public void setAvailabilityStatus(String availabilityStatus) { this.availabilityStatus = availabilityStatus; }
+        public String getServiceTitle() {
+            return serviceTitle;
+        }
+
+        public void setServiceTitle(String serviceTitle) {
+            this.serviceTitle = serviceTitle;
+        }
+
+        public String getServiceDescription() {
+            return serviceDescription;
+        }
+
+        public void setServiceDescription(String serviceDescription) {
+            this.serviceDescription = serviceDescription;
+        }
+
+        public Long getCategoryId() {
+            return categoryId;
+        }
+
+        public void setCategoryId(Long categoryId) {
+            this.categoryId = categoryId;
+        }
+
+        public BigDecimal getPrice() {
+            return price;
+        }
+
+        public void setPrice(BigDecimal price) {
+            this.price = price;
+        }
+
+        public String getAvailabilityStatus() {
+            return availabilityStatus;
+        }
+
+        public void setAvailabilityStatus(String availabilityStatus) {
+            this.availabilityStatus = availabilityStatus;
+        }
+
+        public String getProvince() {
+            return province;
+        }
+
+        public void setProvince(String province) {
+            this.province = province;
+        }
     }
 
     public static class ServiceResponse {
         private Long serviceId;
         private String serviceTitle;
         private String serviceDescription;
+        private Long categoryId;
         private String categoryName;
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         private BigDecimal price;
         private String availabilityStatus;
         private String providerName;
         private String createdAt;
+        private String province;
 
         public ServiceResponse(Service service) {
             this.serviceId = service.getServiceId();
             this.serviceTitle = service.getServiceTitle();
             this.serviceDescription = service.getServiceDescription();
+            this.categoryId = service.getCategory() != null ? service.getCategory().getCategoryId() : null;
             this.categoryName = service.getCategory() != null ? service.getCategory().getCategoryName() : "Unknown";
             this.price = service.getPrice();
-            this.availabilityStatus = service.getAvailabilityStatus() != null ? service.getAvailabilityStatus().name() : "UNKNOWN";
+            this.availabilityStatus = service.getAvailabilityStatus() != null ? service.getAvailabilityStatus().name()
+                    : "UNKNOWN";
             this.providerName = service.getProvider() != null ? service.getProvider().getFullName() : "Unknown";
             this.createdAt = service.getCreatedAt() != null ? service.getCreatedAt().toString() : "";
+            this.province = service.getProvince();
         }
 
         // Getters
-        public Long getServiceId() { return serviceId; }
-        public String getServiceTitle() { return serviceTitle; }
-        public String getServiceDescription() { return serviceDescription; }
-        public String getCategoryName() { return categoryName; }
-        public BigDecimal getPrice() { return price; }
-        public String getAvailabilityStatus() { return availabilityStatus; }
-        public String getProviderName() { return providerName; }
-        public String getCreatedAt() { return createdAt; }
+        public Long getServiceId() {
+            return serviceId;
+        }
+
+        public String getServiceTitle() {
+            return serviceTitle;
+        }
+
+        public String getServiceDescription() {
+            return serviceDescription;
+        }
+
+        public String getCategoryName() {
+            return categoryName;
+        }
+
+        public BigDecimal getPrice() {
+            return price;
+        }
+
+        public String getAvailabilityStatus() {
+            return availabilityStatus;
+        }
+
+        public String getProviderName() {
+            return providerName;
+        }
+
+        public String getCreatedAt() {
+            return createdAt;
+        }
+
+        public String getProvince() {
+            return province;
+        }
     }
 
     // CREATE - Create a new service
     @PostMapping
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<?> createService(@Valid @RequestBody CreateServiceRequest request,
-                                         @RequestHeader("Authorization") String token) {
+            @RequestHeader("Authorization") String token) {
         try {
             // Extract user ID from JWT token
             String email = jwtUtil.extractUsername(token.replace("Bearer ", ""));
             Optional<User> userOpt = userRepository.findByEmail(email);
-            
+
             if (userOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
             }
-            
+
             User provider = userOpt.get();
-            
+
             // Validate category
             Optional<ServiceCategory> categoryOpt = categoryRepository.findById(request.getCategoryId());
             if (categoryOpt.isEmpty()) {
                 return ResponseEntity.badRequest().body("Invalid category ID");
             }
-            
+
             // Create service
             Service.AvailabilityStatus status;
             try {
                 status = Service.AvailabilityStatus.valueOf(
-                    request.getAvailabilityStatus() != null ? request.getAvailabilityStatus() : "AVAILABLE"
-                );
+                        request.getAvailabilityStatus() != null ? request.getAvailabilityStatus() : "AVAILABLE");
             } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().body("Invalid availability status. Must be AVAILABLE or UNAVAILABLE");
+                return ResponseEntity.badRequest()
+                        .body("Invalid availability status. Must be AVAILABLE or UNAVAILABLE");
             }
-            
+
             Service service = Service.builder()
                     .provider(provider)
                     .category(categoryOpt.get())
@@ -151,11 +252,12 @@ public class ServiceController {
                     .serviceDescription(request.getServiceDescription())
                     .price(request.getPrice())
                     .availabilityStatus(status)
+                    .province(request.getProvince())
                     .build();
-            
+
             Service savedService = serviceRepository.save(service);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ServiceResponse(savedService));
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -206,11 +308,19 @@ public class ServiceController {
     // READ - Search services (public)
     @GetMapping("/search")
     public ResponseEntity<List<ServiceResponse>> searchServices(@RequestParam String query) {
-        List<Service> services = serviceRepository.findByServiceTitleContainingOrServiceDescriptionContaining(query, query);
+        List<Service> services = serviceRepository.findByServiceTitleContainingOrServiceDescriptionContaining(query,
+                query);
         List<ServiceResponse> responses = services.stream()
                 .map(ServiceResponse::new)
                 .toList();
         return ResponseEntity.ok(responses);
+    }
+
+    // READ - Get distinct provinces (public)
+    @GetMapping("/provinces")
+    public ResponseEntity<List<String>> getProvinces() {
+        List<String> provinces = serviceRepository.findDistinctProvinces();
+        return ResponseEntity.ok(provinces);
     }
 
     // READ - Get my services (provider only)
@@ -220,17 +330,17 @@ public class ServiceController {
         try {
             String email = jwtUtil.extractUsername(token.replace("Bearer ", ""));
             Optional<User> userOpt = userRepository.findByEmail(email);
-            
+
             if (userOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
             }
-            
+
             List<Service> services = serviceRepository.findByProvider(userOpt.get());
             List<ServiceResponse> responses = services.stream()
                     .map(ServiceResponse::new)
                     .toList();
             return ResponseEntity.ok(responses);
-            
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -240,26 +350,26 @@ public class ServiceController {
     @PutMapping("/{serviceId}")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<?> updateService(@PathVariable Long serviceId,
-                                         @Valid @RequestBody UpdateServiceRequest request,
-                                         @RequestHeader("Authorization") String token) {
+            @Valid @RequestBody UpdateServiceRequest request,
+            @RequestHeader("Authorization") String token) {
         try {
             String email = jwtUtil.extractUsername(token.replace("Bearer ", ""));
             Optional<User> userOpt = userRepository.findByEmail(email);
-            
+
             if (userOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
             }
-            
+
             User provider = userOpt.get();
-            
+
             // Find service and ensure it belongs to the provider
             Optional<Service> serviceOpt = serviceRepository.findByServiceIdAndProvider(serviceId, provider);
             if (serviceOpt.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             Service service = serviceOpt.get();
-            
+
             // Update fields if provided
             if (request.getServiceTitle() != null) {
                 service.setServiceTitle(request.getServiceTitle());
@@ -281,13 +391,14 @@ public class ServiceController {
                 try {
                     service.setAvailabilityStatus(Service.AvailabilityStatus.valueOf(request.getAvailabilityStatus()));
                 } catch (IllegalArgumentException e) {
-                    return ResponseEntity.badRequest().body("Invalid availability status. Must be AVAILABLE or UNAVAILABLE");
+                    return ResponseEntity.badRequest()
+                            .body("Invalid availability status. Must be AVAILABLE or UNAVAILABLE");
                 }
             }
-            
+
             Service updatedService = serviceRepository.save(service);
             return ResponseEntity.ok(new ServiceResponse(updatedService));
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -299,25 +410,25 @@ public class ServiceController {
     @DeleteMapping("/{serviceId}")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<?> deleteService(@PathVariable Long serviceId,
-                                         @RequestHeader("Authorization") String token) {
+            @RequestHeader("Authorization") String token) {
         try {
             String email = jwtUtil.extractUsername(token.replace("Bearer ", ""));
             Optional<User> userOpt = userRepository.findByEmail(email);
-            
+
             if (userOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
             }
-            
+
             User provider = userOpt.get();
-            
+
             // Check if service exists and belongs to the provider
             if (!serviceRepository.existsByServiceIdAndProvider(serviceId, provider)) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             serviceRepository.deleteById(serviceId);
             return ResponseEntity.ok("Service deleted successfully");
-            
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error deleting service: " + e.getMessage());
@@ -328,32 +439,33 @@ public class ServiceController {
     @PatchMapping("/{serviceId}/toggle-status")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<?> toggleServiceStatus(@PathVariable Long serviceId,
-                                               @RequestHeader("Authorization") String token) {
+            @RequestHeader("Authorization") String token) {
         try {
             String email = jwtUtil.extractUsername(token.replace("Bearer ", ""));
             Optional<User> userOpt = userRepository.findByEmail(email);
-            
+
             if (userOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
             }
-            
+
             User provider = userOpt.get();
-            
+
             Optional<Service> serviceOpt = serviceRepository.findByServiceIdAndProvider(serviceId, provider);
             if (serviceOpt.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             Service service = serviceOpt.get();
-            Service.AvailabilityStatus newStatus = service.getAvailabilityStatus() == Service.AvailabilityStatus.AVAILABLE 
-                    ? Service.AvailabilityStatus.UNAVAILABLE 
-                    : Service.AvailabilityStatus.AVAILABLE;
-            
+            Service.AvailabilityStatus newStatus = service
+                    .getAvailabilityStatus() == Service.AvailabilityStatus.AVAILABLE
+                            ? Service.AvailabilityStatus.UNAVAILABLE
+                            : Service.AvailabilityStatus.AVAILABLE;
+
             service.setAvailabilityStatus(newStatus);
             Service updatedService = serviceRepository.save(service);
-            
+
             return ResponseEntity.ok(new ServiceResponse(updatedService));
-            
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error toggling service status: " + e.getMessage());

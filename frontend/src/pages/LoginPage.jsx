@@ -21,7 +21,7 @@ export default function LoginPage() {
       const role = getRole();
       if (role === "ADMIN") navigate("/admin");
       else if (role === "PROVIDER") navigate("/provider");
-      else navigate("/");
+      else if (role === "CUSTOMER") navigate("/customer");
     } catch (err) {
       setError("Invalid credentials");
     }

@@ -6,6 +6,7 @@ import ProfilePage from "./pages/ProfilePage";
 import AdminDashboard from "./pages/AdminDashboard";
 import Navbar from "./components/Navbar";
 import ProviderDashboard from "./pages/ProviderDashboard";
+import CustomerDashboard from "./pages/CustomerDashboard";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/admin/*" element={<AdminDashboard />} />
         <Route path="/provider/*" element={<ProviderDashboard />} />
+        <Route path="/customer/*" element={<CustomerDashboard />} />
       </Routes>
     </BrowserRouter>
   );
