@@ -11,6 +11,7 @@ export default function CustomerDashboard() {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [availabilityFilter, setAvailabilityFilter] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -74,7 +75,18 @@ export default function CustomerDashboard() {
       ? s.availabilityStatus === availabilityFilter
       : true;
 
-    return categoryMatch && provinceMatch && priceMatch && availabilityMatch;
+    const searchMatch = searchQuery
+      ? s.serviceTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.serviceDescription.toLowerCase().includes(searchQuery.toLowerCase())
+      : true;
+
+    return (
+      categoryMatch &&
+      provinceMatch &&
+      priceMatch &&
+      availabilityMatch &&
+      searchMatch
+    );
   });
 
   if (loading) return <div className="max-w-6xl mx-auto p-6">Loading...</div>;
@@ -119,6 +131,17 @@ export default function CustomerDashboard() {
           <div className="bg-white rounded shadow p-4 mb-6">
             <h2 className="text-lg font-semibold mb-2">Filters</h2>
             <div className="flex flex-wrap gap-4 items-end">
+              {/* ✅ Search Box */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Search</label>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search services..."
+                  className="border p-2 rounded w-64"
+                />
+              </div>
               {/* Category Filter */}
               <div className="flex flex-col">
                 <label className="text-sm font-medium mb-1">Category</label>
