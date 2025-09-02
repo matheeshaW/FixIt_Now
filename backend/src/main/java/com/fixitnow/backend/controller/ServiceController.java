@@ -12,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.math.BigDecimal;
@@ -436,39 +439,26 @@ public class ServiceController {
     }
 
     // Toggle service availability status
+
     @PatchMapping("/{serviceId}/toggle-status")
     @PreAuthorize("hasRole('PROVIDER')")
-    public ResponseEntity<?> toggleServiceStatus(@PathVariable Long serviceId,
-            @RequestHeader("Authorization") String token) {
-        try {
-            String email = jwtUtil.extractUsername(token.replace("Bearer ", ""));
-            Optional<User> userOpt = userRepository.findByEmail(email);
+    public ResponseEntity<ServiceResponse> toggleServiceStatus(
+            @PathVariable Long serviceId,
+            @AuthenticationPrincipal User provider) {
 
-            if (userOpt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
-            }
+        // Find service belonging to this provider
+        Service service = serviceRepository.findByServiceIdAndProvider(serviceId, provider)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found"));
 
-            User provider = userOpt.get();
+        // Toggle status
+        Service.AvailabilityStatus newStatus = (service.getAvailabilityStatus() == Service.AvailabilityStatus.AVAILABLE)
+                ? Service.AvailabilityStatus.UNAVAILABLE
+                : Service.AvailabilityStatus.AVAILABLE;
 
-            Optional<Service> serviceOpt = serviceRepository.findByServiceIdAndProvider(serviceId, provider);
-            if (serviceOpt.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
+        service.setAvailabilityStatus(newStatus);
+        Service updatedService = serviceRepository.save(service);
 
-            Service service = serviceOpt.get();
-            Service.AvailabilityStatus newStatus = service
-                    .getAvailabilityStatus() == Service.AvailabilityStatus.AVAILABLE
-                            ? Service.AvailabilityStatus.UNAVAILABLE
-                            : Service.AvailabilityStatus.AVAILABLE;
-
-            service.setAvailabilityStatus(newStatus);
-            Service updatedService = serviceRepository.save(service);
-
-            return ResponseEntity.ok(new ServiceResponse(updatedService));
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error toggling service status: " + e.getMessage());
-        }
+        return ResponseEntity.ok(new ServiceResponse(updatedService));
     }
+
 }
