@@ -444,9 +444,12 @@ public class ServiceController {
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<ServiceResponse> toggleServiceStatus(
             @PathVariable Long serviceId,
-            @AuthenticationPrincipal User provider) {
+            @RequestHeader("Authorization") String token) {
 
-        // Find service belonging to this provider
+        String email = jwtUtil.extractUsername(token.replace("Bearer ", ""));
+        User provider = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
+
         Service service = serviceRepository.findByServiceIdAndProvider(serviceId, provider)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found"));
 
