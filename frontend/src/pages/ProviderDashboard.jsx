@@ -39,6 +39,16 @@ export default function ProviderDashboard() {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    if (message && activeTab === "services") {
+      const timer = setTimeout(() => {
+        setMessage("");
+      }, 3000);
+
+      return () => clearTimeout(timer); // cleanup when component unmounts or tab changes
+    }
+  }, [message, activeTab]);
+
   const fetchServices = async () => {
     try {
       const token = getToken();
@@ -210,7 +220,7 @@ export default function ProviderDashboard() {
       </div>
 
       {/* Messages */}
-      {message && (
+      {message && activeTab === "services" && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
           {message}
         </div>
