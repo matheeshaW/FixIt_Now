@@ -12,36 +12,53 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="p-4 bg-gray-800 text-white flex items-center justify-between">
-      <div className="flex gap-4 items-center">
-        <Link to="/">
-          <img src="../images/logo.png" alt="logo" className="w-50 h-20" />
+    <nav className="bg-gradient-to-r from-green-500 to-green-700 shadow-md px-6 py-4 flex items-center justify-between">
+      {/* Logo */}
+      <div className="flex items-center gap-3">
+        <Link to="/" className="flex items-center">
+          <img src="../images/logo.png" alt="logo" className="h-12 w-auto" />
         </Link>
       </div>
-      <div className="flex gap-4 items-center">
-        {loggedIn && (
+
+      {/* Navigation Links */}
+      <div className="flex items-center gap-6">
+        {loggedIn ? (
           <>
-            {/* Profile button */}
-            <Link to="/profile" className="hover:underline">
+            <Link
+              to="/profile"
+              className="text-white hover:text-gray-100 transition font-medium"
+            >
               Profile
             </Link>
             {role === "ADMIN" && (
-              <Link to="/admin" className="hover:underline">
+              <Link
+                to="/admin"
+                className="text-white hover:text-gray-100 transition font-medium"
+              >
                 Admin Dashboard
               </Link>
             )}
             <button
               onClick={handleLogout}
-              className="bg-red-600 px-3 py-1 rounded"
+              className="bg-red-500 hover:bg-red-600 text-white font-medium px-4 py-2 rounded-lg shadow transition"
             >
               Log out
             </button>
           </>
-        )}
-        {!loggedIn && (
+        ) : (
           <>
-            <Link to="/register">Register</Link>
-            <Link to="/login">Login</Link>
+            <Link
+              to="/register"
+              className="bg-white text-green-700 font-medium px-4 py-2 rounded-lg shadow hover:bg-gray-100 transition"
+            >
+              Register
+            </Link>
+            <Link
+              to="/login"
+              className="bg-green-500 text-white font-medium px-4 py-2 rounded-lg shadow hover:bg-green-600 transition"
+            >
+              Login
+            </Link>
           </>
         )}
       </div>
