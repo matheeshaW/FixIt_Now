@@ -4,6 +4,7 @@ import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminDashboard from './pages/AdminDashboard';
+import SubmitReviewPage from './pages/SubmitReviewPage';
 import Navbar from './components/Navbar';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/profile" element={<ProfilePage />} />
 				<Route path="/admin/*" element={<AdminDashboard />} />
+				<Route path="/submit-review" element={<SubmitReviewPage />} />
 			</Routes>
 		</BrowserRouter>
 	);

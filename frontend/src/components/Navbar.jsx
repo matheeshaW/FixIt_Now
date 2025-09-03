@@ -17,6 +17,14 @@ export default function Navbar() {
 				<Link to="/" className="font-semibold">FixIt Now</Link>
 			</div>
 			<div className="flex gap-4 items-center">
+				{/* Temporary Review button - always visible */}
+				<Link 
+					to="/submit-review" 
+					className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition-colors"
+				>
+					Review
+				</Link>
+				
 				{loggedIn && (
 					<>
 						{/* Profile button */}
