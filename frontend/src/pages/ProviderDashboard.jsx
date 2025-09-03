@@ -39,13 +39,11 @@ export default function ProviderDashboard() {
     fetchCategories();
   }, []);
 
+  // Auto-hide messages in services tab
   useEffect(() => {
     if (message && activeTab === "services") {
-      const timer = setTimeout(() => {
-        setMessage("");
-      }, 3000);
-
-      return () => clearTimeout(timer); // cleanup when component unmounts or tab changes
+      const timer = setTimeout(() => setMessage(""), 5000);
+      return () => clearTimeout(timer);
     }
   }, [message, activeTab]);
 
@@ -82,10 +80,7 @@ export default function ProviderDashboard() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCreateService = async (e) => {
@@ -111,7 +106,7 @@ export default function ProviderDashboard() {
         province: formData.province,
       };
 
-      const response = await api.post("/api/services", serviceData, {
+      await api.post("/api/services", serviceData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -122,12 +117,10 @@ export default function ProviderDashboard() {
         categoryId: "",
         price: "",
         availabilityStatus: "AVAILABLE",
+        province: "",
       });
 
-      // Refresh services list
       await fetchServices();
-
-      // Switch to services tab to show the new service
       setActiveTab("services");
     } catch (err) {
       console.error("Error creating service:", err);
@@ -138,9 +131,8 @@ export default function ProviderDashboard() {
   };
 
   const handleDeleteService = async (serviceId) => {
-    if (!window.confirm("Are you sure you want to delete this service?")) {
+    if (!window.confirm("Are you sure you want to delete this service?"))
       return;
-    }
 
     try {
       const token = getToken();
@@ -175,101 +167,88 @@ export default function ProviderDashboard() {
     }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString();
-  };
+  const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
 
   if (loading) return <div className="max-w-6xl mx-auto p-6">Loading...</div>;
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-3xl font-semibold mb-6">Provider Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6 text-green-700">
+        Provider Dashboard
+      </h1>
 
-      {/* Navigation Tabs */}
-      <div className="flex border-b mb-6">
-        <button
-          onClick={() => setActiveTab("dashboard")}
-          className={`px-4 py-2 font-medium ${
-            activeTab === "dashboard"
-              ? "border-b-2 border-blue-600 text-blue-600"
-              : "text-gray-600 hover:text-gray-800"
-          }`}
-        >
-          Dashboard
-        </button>
-        <button
-          onClick={() => setActiveTab("services")}
-          className={`px-4 py-2 font-medium ${
-            activeTab === "services"
-              ? "border-b-2 border-blue-600 text-blue-600"
-              : "text-gray-600 hover:text-gray-800"
-          }`}
-        >
-          My Services
-        </button>
-        <button
-          onClick={() => setActiveTab("create")}
-          className={`px-4 py-2 font-medium ${
-            activeTab === "create"
-              ? "border-b-2 border-blue-600 text-blue-600"
-              : "text-gray-600 hover:text-gray-800"
-          }`}
-        >
-          Create Service
-        </button>
+      {/* Tabs */}
+      <div className="flex border-b mb-6 gap-2">
+        {["dashboard", "services", "create"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2 font-medium rounded-t-lg transition ${
+              activeTab === tab
+                ? "bg-green-100 border-b-0 text-green-800"
+                : "text-gray-600 hover:text-green-700"
+            }`}
+          >
+            {tab === "dashboard"
+              ? "Dashboard"
+              : tab === "services"
+              ? "My Services"
+              : "Create Service"}
+          </button>
+        ))}
       </div>
 
       {/* Messages */}
       {message && activeTab === "services" && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+        <div className="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded mb-4 shadow">
           {message}
         </div>
       )}
-
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 shadow">
           {error}
         </div>
       )}
 
       {/* Dashboard Tab */}
       {activeTab === "dashboard" && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                Total Services
-              </h3>
-              <p className="text-3xl font-bold text-blue-600">
-                {services.length}
-              </p>
-            </div>
-            <div className="bg-white rounded shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                Available Services
-              </h3>
-              <p className="text-3xl font-bold text-green-600">
-                {
-                  services.filter((s) => s.availabilityStatus === "AVAILABLE")
-                    .length
-                }
-              </p>
-            </div>
-            <div className="bg-white rounded shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                Total Revenue
-              </h3>
-              <p className="text-3xl font-bold text-purple-600">
-                Rs.
-                {services
-                  .reduce((sum, s) => sum + parseFloat(s.price), 0)
-                  .toFixed(2)}
-              </p>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded shadow p-6">
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              Total Services
+            </h3>
+            <p className="text-3xl font-bold text-green-700">
+              {services.length}
+            </p>
+          </div>
+          <div className="bg-white rounded shadow p-6">
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              Available Services
+            </h3>
+            <p className="text-3xl font-bold text-green-600">
+              {
+                services.filter((s) => s.availabilityStatus === "AVAILABLE")
+                  .length
+              }
+            </p>
+          </div>
+          <div className="bg-white rounded shadow p-6">
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              Total Revenue
+            </h3>
+            <p className="text-3xl font-bold text-green-800">
+              Rs.
+              {services
+                .reduce((sum, s) => sum + parseFloat(s.price), 0)
+                .toFixed(2)}
+            </p>
           </div>
 
-          <div className="bg-white rounded shadow p-6">
-            <h3 className="text-xl font-semibold mb-4">Recent Services</h3>
+          {/* Recent Services */}
+          <div className="col-span-full bg-green-50 p-6 rounded shadow">
+            <h3 className="text-xl font-semibold mb-4 text-green-700">
+              Recent Services
+            </h3>
             {services.length === 0 ? (
               <p className="text-gray-500">No services created yet.</p>
             ) : (
@@ -277,19 +256,29 @@ export default function ProviderDashboard() {
                 {services.slice(0, 3).map((service) => (
                   <div
                     key={service.serviceId}
-                    className="flex justify-between items-center p-3 bg-gray-50 rounded"
+                    className="flex justify-between items-center p-4 bg-white rounded shadow hover:bg-green-100 transition"
                   >
-                    <div>
-                      <h4 className="font-medium">{service.serviceTitle}</h4>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-800">
+                        {service.serviceTitle}
+                      </h4>
                       <p className="text-sm text-gray-600">
                         {service.categoryName}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold">Rs.{service.price}</p>
-                      <p className="text-sm text-gray-600">
-                        {service.availabilityStatus}
+                      <p className="font-semibold text-green-700">
+                        Rs.{service.price}
                       </p>
+                      <span
+                        className={`text-xs px-2 py-1 rounded ${
+                          service.availabilityStatus === "AVAILABLE"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-gray-100 text-gray-600"
+                        }`}
+                      >
+                        {service.availabilityStatus}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -301,69 +290,71 @@ export default function ProviderDashboard() {
 
       {/* Services Tab */}
       {activeTab === "services" && (
-        <div className="bg-white rounded shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">My Services</h2>
+        <div className="space-y-4">
           {services.length === 0 ? (
             <p className="text-gray-500">
               No services created yet. Create your first service!
             </p>
           ) : (
-            <div className="space-y-4">
-              {services.map((service) => (
-                <div key={service.serviceId} className="border rounded p-4">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold">
-                        {service.serviceTitle}
-                      </h3>
-                      <p className="text-gray-600 mb-2">
-                        {service.serviceDescription}
-                      </p>
-                      <div className="flex gap-4 text-sm text-gray-500">
-                        <span>Category: {service.categoryName}</span>
-                        <span>Created: {formatDate(service.createdAt)}</span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-blue-600">
-                        Rs.{service.price}
-                      </p>
-                      <span
-                        className={`px-2 py-1 rounded text-xs ${
-                          service.availabilityStatus === "AVAILABLE"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-800"
-                        }`}
-                      >
-                        {service.availabilityStatus}
-                      </span>
+            services.map((service) => (
+              <div
+                key={service.serviceId}
+                className="bg-white shadow rounded p-4 hover:shadow-lg transition"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {service.serviceTitle}
+                    </h3>
+                    <p className="text-gray-600 mb-2">
+                      {service.serviceDescription}
+                    </p>
+                    <div className="flex gap-4 text-sm text-gray-500">
+                      <span>Category: {service.categoryName}</span>
+                      <span>Created: {formatDate(service.createdAt)}</span>
                     </div>
                   </div>
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      onClick={() => handleToggleStatus(service.serviceId)}
-                      className="bg-yellow-600 text-white px-3 py-1 rounded text-sm hover:bg-yellow-700"
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-green-700">
+                      Rs.{service.price}
+                    </p>
+                    <span
+                      className={`px-2 py-1 rounded text-xs ${
+                        service.availabilityStatus === "AVAILABLE"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
                     >
-                      Toggle Status
-                    </button>
-                    <button
-                      onClick={() => handleDeleteService(service.serviceId)}
-                      className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
-                    >
-                      Delete
-                    </button>
+                      {service.availabilityStatus}
+                    </span>
                   </div>
                 </div>
-              ))}
-            </div>
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={() => handleToggleStatus(service.serviceId)}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition"
+                  >
+                    Toggle Status
+                  </button>
+                  <button
+                    onClick={() => handleDeleteService(service.serviceId)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))
           )}
         </div>
       )}
 
       {/* Create Service Tab */}
       {activeTab === "create" && (
-        <div className="bg-white rounded shadow p-4">
-          <h2 className="text-xl font-semibold mb-4">Create New Service</h2>
+        <div className="bg-white shadow rounded p-6">
+          <h2 className="text-xl font-semibold mb-4 text-green-700">
+            Create New Service
+          </h2>
           <form onSubmit={handleCreateService} className="space-y-4">
             <div>
               <label className="block text-sm mb-1">Service Title *</label>
@@ -372,7 +363,7 @@ export default function ProviderDashboard() {
                 name="serviceTitle"
                 value={formData.serviceTitle}
                 onChange={handleInputChange}
-                className="w-full border p-2 rounded"
+                className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
                 placeholder="Enter service title"
                 required
                 maxLength={150}
@@ -384,7 +375,7 @@ export default function ProviderDashboard() {
                 name="serviceDescription"
                 value={formData.serviceDescription}
                 onChange={handleInputChange}
-                className="w-full border p-2 rounded"
+                className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
                 rows="4"
                 placeholder="Describe your service"
                 maxLength={1000}
@@ -397,7 +388,7 @@ export default function ProviderDashboard() {
                   name="categoryId"
                   value={formData.categoryId}
                   onChange={handleInputChange}
-                  className="w-full border p-2 rounded"
+                  className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
                   required
                 >
                   <option value="">Select category</option>
@@ -418,7 +409,7 @@ export default function ProviderDashboard() {
                   name="price"
                   value={formData.price}
                   onChange={handleInputChange}
-                  className="w-full border p-2 rounded"
+                  className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
                   placeholder="0.00"
                   step="0.01"
                   min="0.01"
@@ -432,7 +423,7 @@ export default function ProviderDashboard() {
                 name="province"
                 value={formData.province}
                 onChange={handleInputChange}
-                className="w-full border p-2 rounded"
+                className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
                 required
               >
                 <option value="">Select province</option>
@@ -449,7 +440,7 @@ export default function ProviderDashboard() {
                 name="availabilityStatus"
                 value={formData.availabilityStatus}
                 onChange={handleInputChange}
-                className="w-full border p-2 rounded"
+                className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
               >
                 <option value="AVAILABLE">Available</option>
                 <option value="UNAVAILABLE">Unavailable</option>
@@ -458,7 +449,7 @@ export default function ProviderDashboard() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded shadow disabled:bg-gray-400 disabled:cursor-not-allowed transition"
             >
               {loading ? "Creating..." : "Create Service"}
             </button>
