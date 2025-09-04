@@ -9,7 +9,7 @@ export default function CustomerDashboard() {
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [priceRange, setPriceRange] = useState([0, 500000]);
   const [availabilityFilter, setAvailabilityFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -60,21 +60,15 @@ export default function CustomerDashboard() {
 
   const filteredServices = services.filter((s) => {
     const categoryMatch = selectedCategory
-      ? s.categoryName ===
-        categories.find((c) => c.categoryId === Number(selectedCategory))
-          ?.categoryName
+      ? s.categoryId === Number(selectedCategory)
       : true;
-
     const provinceMatch = selectedProvince
       ? s.province === selectedProvince
       : true;
-
     const priceMatch = s.price >= priceRange[0] && s.price <= priceRange[1];
-
     const availabilityMatch = availabilityFilter
       ? s.availabilityStatus === availabilityFilter
       : true;
-
     const searchMatch = searchQuery
       ? s.serviceTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
         s.serviceDescription.toLowerCase().includes(searchQuery.toLowerCase())
