@@ -57,42 +57,119 @@ export default function ProfilePage() {
 		setNewPassword('');
 	};
 
-	if (!profile) return <div className="p-6">Loading...</div>;
+	if (!profile) return (
+		<div className="min-h-screen flex items-center justify-center">
+			<div className="text-center">
+				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+				<p className="text-gray-600">Loading your profile...</p>
+			</div>
+		</div>
+	);
 
 	return (
-		<div className="max-w-2xl mx-auto p-6">
-			<h1 className="text-2xl font-semibold mb-4">My Profile</h1>
-			{message && <div className="text-green-600 mb-2">{message}</div>}
-			<div className="bg-white rounded shadow p-4 mb-6">
-				<form noValidate onSubmit={handleUpdate}>
-					<div className="mb-3">
-						<label className="block text-sm mb-1">Full Name</label>
-						<input className={`w-full border p-2 rounded ${errors.fullName ? 'border-red-500' : ''}`} value={fullName} onChange={(e)=>setFullName(e.target.value)} />
-						{errors.fullName && <div className="text-red-600 text-sm mt-1">{errors.fullName}</div>}
+		<div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8">
+			<div className="max-w-4xl mx-auto px-6">
+				<div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+					<div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
+						<h1 className="text-3xl font-bold text-white">My Profile</h1>
+						<p className="text-blue-100 mt-2">Manage your account information and settings</p>
 					</div>
-					<div className="mb-3">
-						<label className="block text-sm mb-1">Email</label>
-						<input className="w-full border p-2 rounded bg-gray-100" value={profile.email} readOnly />
-					</div>
-					<div className="mb-4">
-						<label className="block text-sm mb-1">Phone</label>
-						<input className={`w-full border p-2 rounded ${errors.phone ? 'border-red-500' : ''}`} value={phone} onChange={(e)=>setPhone(e.target.value)} />
-						{errors.phone && <div className="text-red-600 text-sm mt-1">{errors.phone}</div>}
-					</div>
-					<button className="bg-blue-600 text-white px-4 py-2 rounded">Update</button>
-				</form>
-			</div>
+					
+					<div className="p-8">
+						{message && (
+							<div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6">
+								{message}
+							</div>
+						)}
 
-			<div className="bg-white rounded shadow p-4">
-				<h2 className="font-semibold mb-3">Reset Password</h2>
-				<form noValidate onSubmit={handleResetPassword}>
-					<input type="password" className={`w-full border p-2 rounded mb-1 ${errors.newPassword ? 'border-red-500' : ''}`} placeholder="New password" value={newPassword} onChange={(e)=>setNewPassword(e.target.value)} />
-					{errors.newPassword && <div className="text-red-600 text-sm mb-2">{errors.newPassword}</div>}
-					<button className="bg-gray-800 text-white px-4 py-2 rounded">Reset Password</button>
-				</form>
+						<div className="grid md:grid-cols-2 gap-8">
+							{/* Profile Information */}
+							<div className="space-y-6">
+								<h2 className="text-xl font-semibold text-gray-800 border-b border-gray-200 pb-2">
+									👤 Personal Information
+								</h2>
+								<form noValidate onSubmit={handleUpdate} className="space-y-4">
+									<div>
+										<label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+										<input 
+											className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+												errors.fullName ? 'border-red-500 bg-red-50' : 'border-gray-300'
+											}`} 
+											value={fullName} 
+											onChange={(e)=>setFullName(e.target.value)} 
+										/>
+										{errors.fullName && <div className="text-red-600 text-sm mt-1">{errors.fullName}</div>}
+									</div>
+									<div>
+										<label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+										<input 
+											className="w-full px-4 py-3 border rounded-lg bg-gray-100 text-gray-600" 
+											value={profile.email} 
+											readOnly 
+										/>
+									</div>
+									<div>
+										<label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+										<input 
+											className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+												errors.phone ? 'border-red-500 bg-red-50' : 'border-gray-300'
+											}`} 
+											value={phone} 
+											onChange={(e)=>setPhone(e.target.value)} 
+										/>
+										{errors.phone && <div className="text-red-600 text-sm mt-1">{errors.phone}</div>}
+									</div>
+									<button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 hover:scale-105 hover:shadow-lg">
+										💾 Update Profile
+									</button>
+								</form>
+							</div>
+
+							{/* Password Reset */}
+							<div className="space-y-6">
+								<h2 className="text-xl font-semibold text-gray-800 border-b border-gray-200 pb-2">
+									🔒 Security
+								</h2>
+								<form noValidate onSubmit={handleResetPassword} className="space-y-4">
+									<div>
+										<label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+										<input 
+											type="password" 
+											className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+												errors.newPassword ? 'border-red-500 bg-red-50' : 'border-gray-300'
+											}`} 
+											placeholder="Enter new password" 
+											value={newPassword} 
+											onChange={(e)=>setNewPassword(e.target.value)} 
+										/>
+										{errors.newPassword && <div className="text-red-600 text-sm mt-1">{errors.newPassword}</div>}
+									</div>
+									<button className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 hover:scale-105 hover:shadow-lg">
+										🔄 Reset Password
+									</button>
+								</form>
+
+								{/* Account Info */}
+								<div className="bg-gray-50 rounded-lg p-4">
+									<h3 className="font-semibold text-gray-800 mb-2">Account Information</h3>
+									<div className="space-y-2 text-sm text-gray-600">
+										<div className="flex justify-between">
+											<span>Role:</span>
+											<span className="font-medium capitalize">{profile.role.toLowerCase()}</span>
+										</div>
+										<div className="flex justify-between">
+											<span>Member since:</span>
+											<span className="font-medium">
+												{new Date(profile.createdAt).toLocaleDateString()}
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	);
 }
-
-

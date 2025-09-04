@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../services/api';
+import backgroundImage from '../assets/images/loginbackground.png';
 
 export default function RegisterPage() {
 	const [form, setForm] = useState({ fullName: '', email: '', phone: '', role: 'CUSTOMER', password: '' });
@@ -72,40 +74,120 @@ export default function RegisterPage() {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-			<form onSubmit={handleSubmit} className="w-full max-w-md bg-white p-6 rounded shadow">
-				<h1 className="text-2xl font-semibold mb-4">Register</h1>
-				{error && <div className="text-red-600 mb-2">{error}</div>}
-				{success && <div className="text-green-600 mb-2">{success}</div>}
+		<div 
+			className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat relative py-12"
+			style={{ backgroundImage: `url(${backgroundImage})` }}
+		>
+			<div className="absolute inset-0 bg-black bg-opacity-50"></div>
+			<div className="relative z-10 w-full max-w-md mx-4">
+				<div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/20">
+					<div className="text-center mb-8">
+						<h1 className="text-3xl font-bold text-gray-800 mb-2">Join FixIt Now</h1>
+						<p className="text-gray-600">Create your account to get started</p>
+					</div>
+					
+					{error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">{error}</div>}
+					{success && <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6">{success}</div>}
 
-				<label className="block mb-2 text-sm">Full Name</label>
-				<input name="fullName" value={form.fullName} onChange={handleChange} className={`w-full border p-2 rounded ${errors.fullName ? 'border-red-500' : ''}`} required />
-				{errors.fullName && <div className="text-red-600 text-sm mt-1">{errors.fullName}</div>}
+					<form noValidate onSubmit={handleSubmit} className="space-y-6">
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+							<input 
+								name="fullName" 
+								value={form.fullName} 
+								onChange={handleChange} 
+								className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+									errors.fullName ? 'border-red-500 bg-red-50' : 'border-gray-300'
+								}`} 
+								placeholder="Enter your full name"
+								required 
+							/>
+							{errors.fullName && <div className="text-red-600 text-sm mt-1">{errors.fullName}</div>}
+						</div>
 
-				<label className="block mb-2 text-sm mt-3">Email</label>
-				<input type="email" name="email" value={form.email} onChange={handleChange} className={`w-full border p-2 rounded ${errors.email ? 'border-red-500' : ''}`} required />
-				{errors.email && <div className="text-red-600 text-sm mt-1">{errors.email}</div>}
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+							<input 
+								type="email" 
+								name="email" 
+								value={form.email} 
+								onChange={handleChange} 
+								className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+									errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
+								}`} 
+								placeholder="Enter your email"
+								required 
+							/>
+							{errors.email && <div className="text-red-600 text-sm mt-1">{errors.email}</div>}
+						</div>
 
-				<label className="block mb-2 text-sm mt-3">Phone</label>
-				<input name="phone" value={form.phone} onChange={handleChange} className={`w-full border p-2 rounded ${errors.phone ? 'border-red-500' : ''}`} placeholder="Optional" />
-				{errors.phone && <div className="text-red-600 text-sm mt-1">{errors.phone}</div>}
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+							<input 
+								name="phone" 
+								value={form.phone} 
+								onChange={handleChange} 
+								className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+									errors.phone ? 'border-red-500 bg-red-50' : 'border-gray-300'
+								}`} 
+								placeholder="Enter your phone (optional)"
+							/>
+							{errors.phone && <div className="text-red-600 text-sm mt-1">{errors.phone}</div>}
+						</div>
 
-				<label className="block mb-2 text-sm mt-3">Role</label>
-				<select name="role" value={form.role} onChange={handleChange} className={`w-full border p-2 rounded ${errors.role ? 'border-red-500' : ''}`} required>
-					<option value="CUSTOMER">Customer</option>
-					<option value="PROVIDER">Provider</option>
-					<option value="ADMIN">Admin</option>
-				</select>
-				{errors.role && <div className="text-red-600 text-sm mt-1">{errors.role}</div>}
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
+							<select 
+								name="role" 
+								value={form.role} 
+								onChange={handleChange} 
+								className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+									errors.role ? 'border-red-500 bg-red-50' : 'border-gray-300'
+								}`} 
+								required
+							>
+								<option value="CUSTOMER">Customer</option>
+								<option value="PROVIDER">Service Provider</option>
+								<option value="ADMIN">Admin</option>
+							</select>
+							{errors.role && <div className="text-red-600 text-sm mt-1">{errors.role}</div>}
+						</div>
 
-				<label className="block mb-2 text-sm mt-3">Password</label>
-				<input type="password" name="password" value={form.password} onChange={handleChange} className={`w-full border p-2 rounded ${errors.password ? 'border-red-500' : ''}`} required />
-				{errors.password && <div className="text-red-600 text-sm mt-1">{errors.password}</div>}
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+							<input 
+								type="password" 
+								name="password" 
+								value={form.password} 
+								onChange={handleChange} 
+								className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+									errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300'
+								}`} 
+								placeholder="Create a strong password"
+								required 
+							/>
+							{errors.password && <div className="text-red-600 text-sm mt-1">{errors.password}</div>}
+						</div>
 
-				<button disabled={submitting} className="w-full bg-blue-600 text-white py-2 rounded mt-4 disabled:opacity-60">{submitting ? 'Submitting...' : 'Register'}</button>
-			</form>
+						<button 
+							type="submit"
+							disabled={submitting}
+							className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:hover:scale-100"
+						>
+							{submitting ? 'Creating Account...' : 'Create Account'}
+						</button>
+					</form>
+
+					<div className="mt-6 text-center">
+						<p className="text-gray-600">
+							Already have an account?{' '}
+							<Link to="/login" className="text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-200">
+								Sign in here
+							</Link>
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 }
-
-
