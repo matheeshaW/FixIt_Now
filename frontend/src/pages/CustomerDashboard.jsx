@@ -16,6 +16,18 @@ export default function CustomerDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const allProvinces = [
+    "Central Province",
+    "Eastern Province",
+    "North Central Province",
+    "Northern Province",
+    "North Western Province",
+    "Sabaragamuwa Province",
+    "Southern Province",
+    "Uva Province",
+    "Western Province",
+  ];
+
   useEffect(() => {
     fetchServices();
     fetchCategories();
@@ -24,7 +36,7 @@ export default function CustomerDashboard() {
 
   const fetchServices = async () => {
     try {
-      const response = await api.get("/api/services"); // all public services
+      const response = await api.get("/api/services"); // public services
       setServices(response.data);
       setLoading(false);
     } catch (err) {
@@ -54,9 +66,7 @@ export default function CustomerDashboard() {
     }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString();
-  };
+  const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
 
   const filteredServices = services.filter((s) => {
     const categoryMatch = selectedCategory
@@ -87,34 +97,29 @@ export default function CustomerDashboard() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-3xl font-semibold mb-6">Customer Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6 text-blue-700">
+        Customer Dashboard
+      </h1>
 
-      {/* Navigation Tabs */}
-      <div className="flex border-b mb-6">
-        <button
-          onClick={() => setActiveTab("browse")}
-          className={`px-4 py-2 font-medium ${
-            activeTab === "browse"
-              ? "border-b-2 border-blue-600 text-blue-600"
-              : "text-gray-600 hover:text-gray-800"
-          }`}
-        >
-          Browse Services
-        </button>
-        <button
-          onClick={() => setActiveTab("favorites")}
-          className={`px-4 py-2 font-medium ${
-            activeTab === "favorites"
-              ? "border-b-2 border-blue-600 text-blue-600"
-              : "text-gray-600 hover:text-gray-800"
-          }`}
-        >
-          Favorites
-        </button>
+      {/* Tabs */}
+      <div className="flex border-b mb-6 gap-2">
+        {["browse", "favorites"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2 font-medium rounded-t-lg transition ${
+              activeTab === tab
+                ? "bg-blue-100 border-b-0 text-blue-800"
+                : "text-gray-600 hover:text-blue-700"
+            }`}
+          >
+            {tab === "browse" ? "Browse Services" : "Favorites"}
+          </button>
+        ))}
       </div>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 shadow">
           {error}
         </div>
       )}
@@ -125,7 +130,7 @@ export default function CustomerDashboard() {
           <div className="bg-white rounded shadow p-4 mb-6">
             <h2 className="text-lg font-semibold mb-2">Filters</h2>
             <div className="flex flex-wrap gap-4 items-end">
-              {/* ✅ Search Box */}
+              {/* Search */}
               <div className="flex flex-col">
                 <label className="text-sm font-medium mb-1">Search</label>
                 <input
@@ -136,7 +141,8 @@ export default function CustomerDashboard() {
                   className="border p-2 rounded w-64"
                 />
               </div>
-              {/* Category Filter */}
+
+              {/* Category */}
               <div className="flex flex-col">
                 <label className="text-sm font-medium mb-1">Category</label>
                 <select
@@ -153,7 +159,7 @@ export default function CustomerDashboard() {
                 </select>
               </div>
 
-              {/* Province Filter */}
+              {/* Province */}
               <div className="flex flex-col">
                 <label className="text-sm font-medium mb-1">Province</label>
                 <select
@@ -170,7 +176,7 @@ export default function CustomerDashboard() {
                 </select>
               </div>
 
-              {/* Price Range */}
+              {/* Price */}
               <div className="flex flex-col">
                 <label className="text-sm font-medium mb-1">Price</label>
                 <select
@@ -186,7 +192,7 @@ export default function CustomerDashboard() {
                 </select>
               </div>
 
-              {/* Availability Filter */}
+              {/* Availability */}
               <div className="flex flex-col">
                 <label className="text-sm font-medium mb-1">Availability</label>
                 <select
@@ -199,7 +205,8 @@ export default function CustomerDashboard() {
                   <option value="UNAVAILABLE">Unavailable</option>
                 </select>
               </div>
-              {/* Reset Filters Button */}
+
+              {/* Reset */}
               <div className="flex flex-col">
                 <button
                   onClick={() => {
@@ -207,6 +214,7 @@ export default function CustomerDashboard() {
                     setSelectedProvince("");
                     setPriceRange([0, 500000]);
                     setAvailabilityFilter("");
+                    setSearchQuery("");
                   }}
                   className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
                 >
@@ -217,54 +225,57 @@ export default function CustomerDashboard() {
           </div>
 
           {/* Services List */}
-          <div className="bg-white rounded shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Available Services</h2>
+          {/* Services List */}
+          <div className="space-y-4">
             {filteredServices.length === 0 ? (
               <p className="text-gray-500">No services available.</p>
             ) : (
-              <div className="space-y-4">
-                {filteredServices.map((service) => (
-                  <div key={service.serviceId} className="border rounded p-4">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold">
-                          {service.serviceTitle}
-                        </h3>
-                        <p className="text-gray-600 mb-2">
-                          {service.serviceDescription}
-                        </p>
-                        <div className="flex gap-4 text-sm text-gray-500">
-                          <span>Category: {service.categoryName}</span>
-                          <span>Province: {service.province}</span>
-                          <span>Added: {formatDate(service.createdAt)}</span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-blue-600">
-                          Rs.{service.price}
-                        </p>
-                        <span
-                          className={`px-2 py-1 rounded text-xs ${
-                            service.availabilityStatus === "AVAILABLE"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {service.availabilityStatus}
-                        </span>
+              filteredServices.map((service) => (
+                <div
+                  key={service.serviceId}
+                  className="bg-white shadow rounded p-4 hover:shadow-lg transition"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        {service.serviceTitle}
+                      </h3>
+                      <p className="text-gray-600 mb-2">
+                        {service.serviceDescription}
+                      </p>
+                      <div className="flex gap-4 text-sm text-gray-500">
+                        <span>Category: {service.categoryName}</span>
+                        <span>Province: {service.province}</span>
+                        <span>Added: {formatDate(service.createdAt)}</span>
                       </div>
                     </div>
-                    <div className="mt-4 flex gap-2">
-                      <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
-                        Book Now
-                      </button>
-                      <button className="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700">
-                        Add to Favorites
-                      </button>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-blue-600">
+                        Rs.{service.price}
+                      </p>
+                      <span
+                        className={`px-2 py-1 rounded text-xs ${
+                          service.availabilityStatus === "AVAILABLE"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {service.availabilityStatus}
+                      </span>
                     </div>
                   </div>
-                ))}
-              </div>
+
+                  {/* Buttons */}
+                  <div className="mt-4 flex gap-2">
+                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition">
+                      Book Now
+                    </button>
+                    <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition">
+                      Add to Favorites
+                    </button>
+                  </div>
+                </div>
+              ))
             )}
           </div>
         </div>
@@ -273,7 +284,9 @@ export default function CustomerDashboard() {
       {/* Favorites Tab */}
       {activeTab === "favorites" && (
         <div className="bg-white rounded shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">My Favorite Services</h2>
+          <h2 className="text-xl font-semibold mb-4 text-blue-700">
+            My Favorite Services
+          </h2>
           <p className="text-gray-500">Feature coming soon...</p>
         </div>
       )}
