@@ -7,6 +7,7 @@ export default function CategoryPage() {
 	const [form, setForm] = useState({ categoryName: '', description: '' });
 	const [error, setError] = useState('');
 	const [editingId, setEditingId] = useState(null);
+	const [errors, setErrors] = useState({ categoryName: '', description: '' });
 
 	const fetchCategories = async () => {
 		const res = await api.get('/api/categories');
@@ -17,11 +18,34 @@ export default function CategoryPage() {
 		fetchCategories();
 	}, []);
 
-	const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setForm({ ...form, [name]: value });
+		validateField(name, value);
+	};
+
+	const validateField = (name, value) => {
+		let msg = '';
+		if (name === 'categoryName') {
+			if (!value?.trim()) msg = 'Category name is required';
+			else if (value.trim().length < 2) msg = 'Name must be at least 2 characters';
+		}
+		setErrors((prev) => ({ ...prev, [name]: msg }));
+		return msg;
+	};
+
+	const validateAll = () => {
+		const next = {
+			categoryName: validateField('categoryName', form.categoryName),
+			description: ''
+		};
+		return Object.values(next).every((v) => !v);
+	};
 
 	const handleAdd = async (e) => {
 		e.preventDefault();
 		setError('');
+		if (!validateAll()) return;
 		try {
 			if (editingId) {
 				if (!window.confirm('Update this category?')) return;
@@ -31,6 +55,7 @@ export default function CategoryPage() {
 			}
 			setForm({ categoryName: '', description: '' });
 			setEditingId(null);
+			setErrors({ categoryName: '', description: '' });
 			fetchCategories();
 		} catch (err) {
 			setError('Only admins can manage categories');
@@ -53,8 +78,9 @@ export default function CategoryPage() {
 			<h1 className="text-2xl font-semibold mb-4">Service Categories</h1>
 			{error && <div className="text-red-600 mb-2">{error}</div>}
 			<div className="bg-white rounded shadow p-4 mb-6">
-				<form onSubmit={handleAdd} className="grid grid-cols-1 gap-3">
-					<input name="categoryName" value={form.categoryName} onChange={handleChange} placeholder="Category name" className="border p-2 rounded" />
+				<form noValidate onSubmit={handleAdd} className="grid grid-cols-1 gap-3">
+					<input name="categoryName" value={form.categoryName} onChange={handleChange} placeholder="Category name" className={`border p-2 rounded ${errors.categoryName ? 'border-red-500' : ''}`} />
+					{errors.categoryName && <div className="text-red-600 text-sm -mt-2">{errors.categoryName}</div>}
 					<textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="border p-2 rounded" />
 					<div className="flex gap-2">
 						<button className="bg-blue-600 text-white px-4 py-2 rounded">{editingId ? 'Update Category' : 'Add Category'}</button>
