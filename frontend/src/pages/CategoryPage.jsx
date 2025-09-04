@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
-import { useNavigate } from 'react-router-dom';
+
 
 export default function CategoryPage() {
 	const [categories, setCategories] = useState([]);
 	const [form, setForm] = useState({ categoryName: '', description: '' });
 	const [error, setError] = useState('');
-	const navigate = useNavigate();
+	const [editingId, setEditingId] = useState(null);
 
 	const fetchCategories = async () => {
 		const res = await api.get('/api/categories');
@@ -23,20 +23,27 @@ export default function CategoryPage() {
 		e.preventDefault();
 		setError('');
 		try {
-			await api.post('/api/categories', form);
+			if (editingId) {
+				if (!window.confirm('Update this category?')) return;
+				await api.put(`/api/categories/${editingId}`, form);
+			} else {
+				await api.post('/api/categories', form);
+			}
 			setForm({ categoryName: '', description: '' });
+			setEditingId(null);
 			fetchCategories();
 		} catch (err) {
-			setError('Only admins can add categories');
+			setError('Only admins can manage categories');
 		}
 	};
 
-	const handleUpdate = async (id, updated) => {
-		await api.put(`/api/categories/${id}`, updated);
-		fetchCategories();
+	const startEdit = (c) => {
+		setEditingId(c.categoryId);
+		setForm({ categoryName: c.categoryName || '', description: c.description || '' });
 	};
 
 	const handleDelete = async (id) => {
+		if (!window.confirm('Delete this category?')) return;
 		await api.delete(`/api/categories/${id}`);
 		fetchCategories();
 	};
@@ -49,7 +56,12 @@ export default function CategoryPage() {
 				<form onSubmit={handleAdd} className="grid grid-cols-1 gap-3">
 					<input name="categoryName" value={form.categoryName} onChange={handleChange} placeholder="Category name" className="border p-2 rounded" />
 					<textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="border p-2 rounded" />
-					<button className="bg-blue-600 text-white px-4 py-2 rounded">Add Category</button>
+					<div className="flex gap-2">
+						<button className="bg-blue-600 text-white px-4 py-2 rounded">{editingId ? 'Update Category' : 'Add Category'}</button>
+						{editingId && (
+							<button type="button" onClick={() => { setEditingId(null); setForm({ categoryName: '', description: '' }); }} className="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+						)}
+					</div>
 				</form>
 			</div>
 
@@ -62,7 +74,7 @@ export default function CategoryPage() {
 								<div className="text-sm text-gray-600">{c.description}</div>
 							</div>
 							<div className="space-x-2">
-								<button onClick={() => handleUpdate(c.categoryId, { ...c, categoryName: prompt('Name', c.categoryName) || c.categoryName, description: prompt('Description', c.description || '') || c.description })} className="px-3 py-1 bg-yellow-500 text-white rounded">Edit</button>
+								<button onClick={() => startEdit(c)} className="px-3 py-1 bg-yellow-500 text-white rounded">Edit</button>
 								<button onClick={() => handleDelete(c.categoryId)} className="px-3 py-1 bg-red-600 text-white rounded">Delete</button>
 							</div>
 						</div>
