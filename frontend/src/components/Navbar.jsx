@@ -12,7 +12,13 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-green-500 to-green-700 shadow-md px-6 py-2 flex items-center justify-between">
+    <nav
+      className={`shadow-md px-6 py-2 flex items-center justify-between ${
+        role === "PROVIDER"
+          ? "bg-gradient-to-r from-green-300 to-green-500"
+          : "bg-gradient-to-r from-blue-300 to-blue-500"
+      }`}
+    >
       {/* Logo */}
       <div className="flex items-center gap-3">
         <Link to="/" className="flex items-center">
