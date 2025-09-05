@@ -214,7 +214,7 @@ export default function ProviderDashboard() {
         {/* Dashboard Tab */}
         {activeTab === "dashboard" && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded shadow p-6">
+            <div className="bg-green-100 rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold text-gray-700 mb-2">
                 Total Services
               </h3>
@@ -222,7 +222,7 @@ export default function ProviderDashboard() {
                 {services.length}
               </p>
             </div>
-            <div className="bg-white rounded shadow p-6">
+            <div className="bg-green-100 rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold text-gray-700 mb-2">
                 Available Services
               </h3>
@@ -233,7 +233,7 @@ export default function ProviderDashboard() {
                 }
               </p>
             </div>
-            <div className="bg-white rounded shadow p-6">
+            <div className="bg-green-100 rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold text-gray-700 mb-2">
                 Total Revenue
               </h3>
@@ -246,7 +246,7 @@ export default function ProviderDashboard() {
             </div>
 
             {/* Recent Services */}
-            <div className="col-span-full bg-green-50 p-6 rounded shadow">
+            <div className="col-span-full  p-6 rounded shadow">
               <h3 className="text-xl font-semibold mb-4 text-green-700">
                 Recent Services
               </h3>
@@ -257,7 +257,7 @@ export default function ProviderDashboard() {
                   {services.slice(0, 3).map((service) => (
                     <div
                       key={service.serviceId}
-                      className="flex justify-between items-center p-4 bg-white rounded shadow hover:bg-green-100 transition"
+                      className="flex justify-between items-center p-4 bg-green-100 rounded-lg shadow hover:bg-green-200 transition"
                     >
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-800">
@@ -274,8 +274,8 @@ export default function ProviderDashboard() {
                         <span
                           className={`text-xs px-2 py-1 rounded ${
                             service.availabilityStatus === "AVAILABLE"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-600"
+                              ? " text-green-800"
+                              : " text-red-600"
                           }`}
                         >
                           {service.availabilityStatus}
@@ -300,7 +300,7 @@ export default function ProviderDashboard() {
               services.map((service) => (
                 <div
                   key={service.serviceId}
-                  className="bg-white shadow rounded p-4 hover:shadow-lg transition"
+                  className="bg-green-100 rounded-lg shadow p-4 hover:shadow-lg transition"
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -322,8 +322,8 @@ export default function ProviderDashboard() {
                       <span
                         className={`px-2 py-1 rounded text-xs ${
                           service.availabilityStatus === "AVAILABLE"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-600"
+                            ? " text-green-800"
+                            : " text-red-600"
                         }`}
                       >
                         {service.availabilityStatus}

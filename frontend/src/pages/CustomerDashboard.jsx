@@ -139,28 +139,35 @@ export default function CustomerDashboard() {
         {/* Browse Tab */}
         {activeTab === "browse" && (
           <div className="space-y-6">
-            <div className="bg-white rounded shadow p-4 mb-6">
-              <h2 className="text-lg font-semibold mb-2">Filters</h2>
-              <div className="flex flex-wrap gap-4 items-end">
+            {/* Filters Card */}
+            <div className="bg-gradient-to-r from-blue-50 via-blue-100 to-blue-50 rounded-2xl shadow-lg p-4 mb-3">
+              <h2 className="text-xl font-semibold mb-4 text-blue-700">
+                Filters
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 items-end">
                 {/* Search */}
                 <div className="flex flex-col">
-                  <label className="text-sm font-medium mb-1">Search</label>
+                  <label className="text-sm font-medium mb-1 text-blue-700">
+                    Search
+                  </label>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search services..."
-                    className="border p-2 rounded w-64"
+                    className="border border-blue-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-300 p-2 rounded-lg transition"
                   />
                 </div>
 
                 {/* Category */}
                 <div className="flex flex-col">
-                  <label className="text-sm font-medium mb-1">Category</label>
+                  <label className="text-sm font-medium mb-1 text-blue-700">
+                    Category
+                  </label>
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="border p-2 rounded w-48"
+                    className="border border-blue-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-300 p-2 rounded-lg transition"
                   >
                     <option value="">All Categories</option>
                     {categories.map((cat) => (
@@ -173,11 +180,13 @@ export default function CustomerDashboard() {
 
                 {/* Province */}
                 <div className="flex flex-col">
-                  <label className="text-sm font-medium mb-1">Province</label>
+                  <label className="text-sm font-medium mb-1 text-blue-700">
+                    Province
+                  </label>
                   <select
                     value={selectedProvince}
                     onChange={(e) => setSelectedProvince(e.target.value)}
-                    className="border p-2 rounded w-48"
+                    className="border border-blue-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-300 p-2 rounded-lg transition"
                   >
                     <option value="">All Provinces</option>
                     {provinces.map((prov) => (
@@ -190,11 +199,13 @@ export default function CustomerDashboard() {
 
                 {/* Price */}
                 <div className="flex flex-col">
-                  <label className="text-sm font-medium mb-1">Price</label>
+                  <label className="text-sm font-medium mb-1 text-blue-700">
+                    Price
+                  </label>
                   <select
                     value={JSON.stringify(priceRange)}
                     onChange={(e) => setPriceRange(JSON.parse(e.target.value))}
-                    className="border p-2 rounded w-48"
+                    className="border border-blue-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-300 p-2 rounded-lg transition"
                   >
                     <option value="[0,500000]">All</option>
                     <option value="[0,2000]">Rs.0 - Rs.2,000</option>
@@ -206,13 +217,13 @@ export default function CustomerDashboard() {
 
                 {/* Availability */}
                 <div className="flex flex-col">
-                  <label className="text-sm font-medium mb-1">
+                  <label className="text-sm font-medium mb-1 text-blue-700">
                     Availability
                   </label>
                   <select
                     value={availabilityFilter}
                     onChange={(e) => setAvailabilityFilter(e.target.value)}
-                    className="border p-2 rounded w-40"
+                    className="border border-blue-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-300 p-2 rounded-lg transition"
                   >
                     <option value="">All</option>
                     <option value="AVAILABLE">Available</option>
@@ -220,8 +231,8 @@ export default function CustomerDashboard() {
                   </select>
                 </div>
 
-                {/* Reset */}
-                <div className="flex flex-col">
+                {/* Reset Button */}
+                <div className="flex items-center mt-2">
                   <button
                     onClick={() => {
                       setSelectedCategory("");
@@ -230,7 +241,7 @@ export default function CustomerDashboard() {
                       setAvailabilityFilter("");
                       setSearchQuery("");
                     }}
-                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow transition"
                   >
                     Reset Filters
                   </button>
@@ -239,7 +250,6 @@ export default function CustomerDashboard() {
             </div>
 
             {/* Services List */}
-            {/* Services List */}
             <div className="space-y-4">
               {filteredServices.length === 0 ? (
                 <p className="text-gray-500">No services available.</p>
@@ -247,7 +257,7 @@ export default function CustomerDashboard() {
                 filteredServices.map((service) => (
                   <div
                     key={service.serviceId}
-                    className="bg-white shadow rounded p-4 hover:shadow-lg transition"
+                    className="bg-gradient-to-r from-blue-50 via-blue-100 to-blue-50 rounded-2xl p-4 hover:shadow-lg transition"
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
