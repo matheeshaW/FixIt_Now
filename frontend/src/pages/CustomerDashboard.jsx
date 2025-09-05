@@ -6,6 +6,7 @@ export default function CustomerDashboard() {
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
   const [provinces, setProvinces] = useState([]);
+  const [favorites, setFavorites] = useState([]);
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
@@ -63,6 +64,16 @@ export default function CustomerDashboard() {
     } catch (err) {
       console.error("Error fetching provinces:", err);
       setError("Failed to fetch provinces");
+    }
+  };
+
+  const toggleFavorite = (serviceId) => {
+    if (favorites.includes(serviceId)) {
+      // Remove from favorites
+      setFavorites(favorites.filter((id) => id !== serviceId));
+    } else {
+      // Add to favorites
+      setFavorites([...favorites, serviceId]);
     }
   };
 
@@ -270,8 +281,17 @@ export default function CustomerDashboard() {
                     <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition">
                       Book Now
                     </button>
-                    <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition">
-                      Add to Favorites
+                    <button
+                      onClick={() => toggleFavorite(service.serviceId)}
+                      className={`px-3 py-1 rounded text-sm transition ${
+                        favorites.includes(service.serviceId)
+                          ? "bg-red-600 hover:bg-red-700 text-white"
+                          : "bg-gray-600 hover:bg-gray-700 text-white"
+                      }`}
+                    >
+                      {favorites.includes(service.serviceId)
+                        ? "Remove from Favorites"
+                        : "Add to Favorites"}
                     </button>
                   </div>
                 </div>
@@ -283,11 +303,66 @@ export default function CustomerDashboard() {
 
       {/* Favorites Tab */}
       {activeTab === "favorites" && (
-        <div className="bg-white rounded shadow p-6">
-          <h2 className="text-xl font-semibold mb-4 text-blue-700">
-            My Favorite Services
-          </h2>
-          <p className="text-gray-500">Feature coming soon...</p>
+        <div className="space-y-4">
+          {favorites.length === 0 ? (
+            <p className="text-gray-500">No favorite services yet.</p>
+          ) : (
+            services
+              .filter((s) => favorites.includes(s.serviceId))
+              .map((service) => (
+                <div
+                  key={service.serviceId}
+                  className="bg-white shadow rounded p-4 hover:shadow-lg transition"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        {service.serviceTitle}
+                      </h3>
+                      <p className="text-gray-600 mb-2">
+                        {service.serviceDescription}
+                      </p>
+                      <div className="flex gap-4 text-sm text-gray-500 mb-2">
+                        <span>Category: {service.categoryName}</span>
+                        <span>Province: {service.province}</span>
+                        <span>Added: {formatDate(service.createdAt)}</span>
+                        <span
+                          className={`px-2 py-1 rounded text-xs ${
+                            service.availabilityStatus === "AVAILABLE"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {service.availabilityStatus}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-blue-600">
+                        Rs.{service.price}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="mt-4 flex gap-2">
+                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition">
+                      Book Now
+                    </button>
+                    <button
+                      onClick={() =>
+                        setFavorites(
+                          favorites.filter((id) => id !== service.serviceId)
+                        )
+                      }
+                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition"
+                    >
+                      Remove from Favorites
+                    </button>
+                  </div>
+                </div>
+              ))
+          )}
         </div>
       )}
     </div>
