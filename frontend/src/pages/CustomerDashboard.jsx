@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import BookingForm from "../components/BookingForm";
+import CustomerBookings from "../components/CustomerBookings";
 
 export default function CustomerDashboard() {
   const [activeTab, setActiveTab] = useState("browse");
@@ -16,6 +18,8 @@ export default function CustomerDashboard() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedService, setSelectedService] = useState(null);
+  const [showBookingForm, setShowBookingForm] = useState(false);
 
   const allProvinces = [
     "Central Province",
@@ -77,6 +81,21 @@ export default function CustomerDashboard() {
     }
   };
 
+  const handleBookService = (service) => {
+    setSelectedService(service);
+    setShowBookingForm(true);
+  };
+
+  const handleBookingCreated = () => {
+    // Refresh any relevant data if needed
+    console.log("Booking created successfully!");
+  };
+
+  const handleCloseBookingForm = () => {
+    setShowBookingForm(false);
+    setSelectedService(null);
+  };
+
   const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
 
   const filteredServices = services.filter((s) => {
@@ -115,7 +134,7 @@ export default function CustomerDashboard() {
 
         {/* Tabs */}
         <div className="flex border-b mb-6 gap-2">
-          {["browse", "favorites"].map((tab) => (
+          {["browse", "favorites", "bookings"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -125,7 +144,7 @@ export default function CustomerDashboard() {
                   : "text-gray-600 hover:text-blue-700"
               }`}
             >
-              {tab === "browse" ? "Browse Services" : "Favorites"}
+              {tab === "browse" ? "Browse Services" : tab === "favorites" ? "Favorites" : "My Bookings"}
             </button>
           ))}
         </div>
@@ -291,7 +310,10 @@ export default function CustomerDashboard() {
 
                     {/* Buttons */}
                     <div className="mt-4 flex gap-2">
-                      <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition">
+                      <button 
+                        onClick={() => handleBookService(service)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+                      >
                         Book Now
                       </button>
                       <button
@@ -359,7 +381,10 @@ export default function CustomerDashboard() {
 
                     {/* Buttons */}
                     <div className="mt-4 flex gap-2">
-                      <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition">
+                      <button 
+                        onClick={() => handleBookService(service)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+                      >
                         Book Now
                       </button>
                       <button
@@ -378,7 +403,21 @@ export default function CustomerDashboard() {
             )}
           </div>
         )}
+
+        {/* Bookings Tab */}
+        {activeTab === "bookings" && (
+          <CustomerBookings />
+        )}
       </div>
+
+      {/* Booking Form Modal */}
+      {showBookingForm && (
+        <BookingForm
+          service={selectedService}
+          onBookingCreated={handleBookingCreated}
+          onClose={handleCloseBookingForm}
+        />
+      )}
     </div>
   );
 }
