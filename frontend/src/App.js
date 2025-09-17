@@ -7,7 +7,6 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Navbar from "./components/Navbar";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import CustomerDashboard from "./pages/CustomerDashboard";
-import AddReviewPage from './pages/reviews/AddReviewPage';
 
 function App() {
   return (
@@ -24,7 +23,6 @@ function App() {
         <Route path="/admin/*" element={<AdminDashboard />} />
         <Route path="/provider/*" element={<ProviderDashboard />} />
         <Route path="/customer/*" element={<CustomerDashboard />} />
-        <Route path="/add-review" element={<AddReviewPage />} />
       </Routes>
     </BrowserRouter>
   );
