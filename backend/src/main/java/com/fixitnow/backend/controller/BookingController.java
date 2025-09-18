@@ -23,6 +23,8 @@ import com.fixitnow.backend.controller.dto.BookingDtos.CreateBookingRequest;
 import com.fixitnow.backend.controller.dto.BookingDtos.UpdateBookingRequest;
 import com.fixitnow.backend.controller.dto.BookingDtos.UpdateBookingStatusRequest;
 import com.fixitnow.backend.model.Booking;
+import com.fixitnow.backend.model.User;
+import com.fixitnow.backend.repository.UserRepository;
 import com.fixitnow.backend.security.JwtUtil;
 import com.fixitnow.backend.service.BookingService;
 
@@ -37,17 +39,20 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
     /**
      * Create a new booking (Customer only)
      */
     @PostMapping
-    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<?> createBooking(
             @Valid @RequestBody CreateBookingRequest request,
             @RequestHeader("Authorization") String token) {
         try {
             String email = jwtUtil.extractUsername(token.replace("Bearer ", ""));
+            // Verify user exists
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
             BookingResponse booking = bookingService.createBooking(request, email);
             return ResponseEntity.status(HttpStatus.CREATED).body(booking);
         } catch (IllegalArgumentException e) {
