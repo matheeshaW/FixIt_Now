@@ -48,7 +48,7 @@ export default function BookingForm({ service, onBookingCreated, onClose }) {
         customerPhone: formData.customerPhone?.trim(),
       };
 
-      await api.post("/api/bookings", bookingData, {
+      const res = await api.post("/api/bookings", bookingData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -62,7 +62,7 @@ export default function BookingForm({ service, onBookingCreated, onClose }) {
 
       // Notify parent component
       if (onBookingCreated) {
-        onBookingCreated();
+        onBookingCreated({ serviceId: service.serviceId, booking: res.data });
       }
 
       // Close modal after a short delay
