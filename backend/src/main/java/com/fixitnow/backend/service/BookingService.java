@@ -1,19 +1,26 @@
 package com.fixitnow.backend.service;
 
-import com.fixitnow.backend.controller.dto.BookingDtos.*;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fixitnow.backend.controller.dto.BookingDtos.BookingResponse;
+import com.fixitnow.backend.controller.dto.BookingDtos.BookingStatsResponse;
+import com.fixitnow.backend.controller.dto.BookingDtos.BookingSummaryResponse;
+import com.fixitnow.backend.controller.dto.BookingDtos.CreateBookingRequest;
+import com.fixitnow.backend.controller.dto.BookingDtos.UpdateBookingRequest;
+import com.fixitnow.backend.controller.dto.BookingDtos.UpdateBookingStatusRequest;
 import com.fixitnow.backend.model.Booking;
+import com.fixitnow.backend.model.Role;
 import com.fixitnow.backend.model.Service;
 import com.fixitnow.backend.model.User;
 import com.fixitnow.backend.repository.BookingRepository;
 import com.fixitnow.backend.repository.ServiceRepository;
 import com.fixitnow.backend.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @org.springframework.stereotype.Service
 @RequiredArgsConstructor
@@ -31,6 +38,11 @@ public class BookingService {
         // Find customer
         User customer = userRepository.findByEmail(customerEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
+
+        // Check if user is a customer
+        if (customer.getRole() != Role.CUSTOMER) {
+            throw new IllegalArgumentException("Only customers can create bookings. Please log in as a customer.");
+        }
 
         // Find service
         Service service = serviceRepository.findById(request.serviceId())
