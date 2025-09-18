@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import { getToken } from "../utils/auth";
 import BookingForm from "../components/BookingForm";
 import CustomerBookings from "../components/CustomerBookings";
 
@@ -20,6 +21,7 @@ export default function CustomerDashboard() {
   const [error, setError] = useState("");
   const [selectedService, setSelectedService] = useState(null);
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const [bookedServiceIds, setBookedServiceIds] = useState(new Set());
 
   const allProvinces = [
     "Central Province",
@@ -37,6 +39,7 @@ export default function CustomerDashboard() {
     fetchServices();
     fetchCategories();
     fetchProvinces();
+    fetchMyActiveBookings();
   }, []);
 
   const fetchServices = async () => {
@@ -71,6 +74,25 @@ export default function CustomerDashboard() {
     }
   };
 
+  const fetchMyActiveBookings = async () => {
+    try {
+      const token = getToken();
+      if (!token) return;
+      const res = await api.get("/api/bookings/customer", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const activeStatuses = new Set(["PENDING", "CONFIRMED", "IN_PROGRESS"]);
+      const activeServiceIds = new Set(
+        (res.data || [])
+          .filter((b) => activeStatuses.has(b.status))
+          .map((b) => b.serviceId)
+      );
+      setBookedServiceIds(activeServiceIds);
+    } catch (err) {
+      // silently ignore for browse tab
+    }
+  };
+
   const toggleFavorite = (serviceId) => {
     if (favorites.includes(serviceId)) {
       // Remove from favorites
@@ -86,9 +108,26 @@ export default function CustomerDashboard() {
     setShowBookingForm(true);
   };
 
-  const handleBookingCreated = () => {
-    // Refresh any relevant data if needed
-    console.log("Booking created successfully!");
+  const handleBookingCreated = (created) => {
+    // created may be undefined from child; refetch to be safe
+    if (created?.serviceId) {
+      setBookedServiceIds((prev) => new Set(prev).add(created.serviceId));
+    } else {
+      fetchMyActiveBookings();
+    }
+    setActiveTab("bookings");
+  };
+
+  const handleBookingCancelled = (cancelled) => {
+    if (cancelled?.serviceId) {
+      setBookedServiceIds((prev) => {
+        const next = new Set(prev);
+        next.delete(cancelled.serviceId);
+        return next;
+      });
+    } else {
+      fetchMyActiveBookings();
+    }
   };
 
   const handleCloseBookingForm = () => {
@@ -114,12 +153,14 @@ export default function CustomerDashboard() {
         s.serviceDescription.toLowerCase().includes(searchQuery.toLowerCase())
       : true;
 
+    const notAlreadyBooked = !bookedServiceIds.has(s.serviceId);
     return (
       categoryMatch &&
       provinceMatch &&
       priceMatch &&
       availabilityMatch &&
-      searchMatch
+      searchMatch &&
+      notAlreadyBooked
     );
   });
 
@@ -406,7 +447,7 @@ export default function CustomerDashboard() {
 
         {/* Bookings Tab */}
         {activeTab === "bookings" && (
-          <CustomerBookings />
+          <CustomerBookings onBookingCancelled={handleBookingCancelled} />
         )}
       </div>
 
