@@ -33,12 +33,19 @@ export default function BookingForm({ service, onBookingCreated, onClose }) {
         return;
       }
 
+    
+      // Ensure backend-compatible date format: yyyy-MM-dd'T'HH:mm:ss
+      const bookingDateValue = formData.bookingDate?.trim();
+      const bookingDateIso = bookingDateValue && bookingDateValue.length === 16
+        ? `${bookingDateValue}:00`
+        : bookingDateValue;
+
       const bookingData = {
         serviceId: service.serviceId,
-        bookingDate: formData.bookingDate,
-        specialRequests: formData.specialRequests,
-        customerAddress: formData.customerAddress,
-        customerPhone: formData.customerPhone,
+        bookingDate: bookingDateIso,
+        specialRequests: formData.specialRequests?.trim(),
+        customerAddress: formData.customerAddress?.trim(),
+        customerPhone: formData.customerPhone?.trim(),
       };
 
       await api.post("/api/bookings", bookingData, {
@@ -66,7 +73,13 @@ export default function BookingForm({ service, onBookingCreated, onClose }) {
       }, 1500);
     } catch (err) {
       console.error("Error creating booking:", err);
-      setError(err.response?.data || "Failed to create booking");
+      if (err.response?.status === 403) {
+        setError("You are not allowed to create a booking. Please log in as a customer.");
+      } else if (err.response?.status === 401) {
+        setError("Session expired or unauthorized. Please log in again.");
+      } else {
+        setError(err.response?.data || "Failed to create booking");
+      }
     } finally {
       setLoading(false);
     }
@@ -143,6 +156,8 @@ export default function BookingForm({ service, onBookingCreated, onClose }) {
             {success}
           </div>
         )}
+
+      
 
         {/* Booking Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -240,7 +255,7 @@ export default function BookingForm({ service, onBookingCreated, onClose }) {
             </button>
             <button
               type="submit"
-              disabled={loading}
+              // disabled={loading || userRole !== "CUSTOMER"}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {loading ? "Creating Booking..." : "Create Booking"}
@@ -251,4 +266,5 @@ export default function BookingForm({ service, onBookingCreated, onClose }) {
     </div>
   );
 }
+
 
