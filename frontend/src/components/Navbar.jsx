@@ -15,8 +15,8 @@ export default function Navbar() {
     <nav
       className={`shadow-md px-6 py-2 flex items-center justify-between bg-white ${
         role === "PROVIDER"
-          ? "bg-gradient-to-r from-[#000000] to-[#475569]"
-          : "bg-gradient-to-r from-[#AFCFD4] to-[#CDE3E7]"
+          ? "bg-gradient-to-r from-[#000000] via-[#181d23] to-[#475569]"
+          : "bg-gradient-to-r from-[#CBD5E1] via-[#2563EB] to-[#1E3A8A]"
       }`}
     >
       {/* Logo */}
