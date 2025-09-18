@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../services/api";
 import { getToken } from "../utils/auth";
 
-export default function CustomerBookings() {
+export default function CustomerBookings({ onBookingCancelled }) {
   const [bookings, setBookings] = useState([]);
   const [upcomingBookings, setUpcomingBookings] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
@@ -81,13 +81,17 @@ export default function CustomerBookings() {
 
     try {
       const token = getToken();
-      await api.put(`/api/bookings/${bookingId}/cancel`, {}, {
+      const res = await api.put(`/api/bookings/${bookingId}/cancel`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       setMessage("Booking cancelled successfully!");
       fetchBookings();
       fetchUpcomingBookings();
+      // notify parent so dashboard can re-include service in browse list
+      if (onBookingCancelled) {
+        onBookingCancelled({ serviceId: res.data.serviceId, bookingId });
+      }
     } catch (err) {
       console.error("Error cancelling booking:", err);
       setError("Failed to cancel booking");
