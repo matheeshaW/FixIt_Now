@@ -13,16 +13,16 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`shadow-md px-6 py-2 flex items-center justify-between ${
+      className={`shadow-md px-6 py-2 flex items-center justify-between bg-white ${
         role === "PROVIDER"
-          ? "bg-gradient-to-r from-green-300 to-green-500"
-          : "bg-gradient-to-r from-blue-300 to-blue-500"
+          ? "bg-gradient-to-r from-[#000000] to-[#475569]"
+          : "bg-gradient-to-r from-[#AFCFD4] to-[#CDE3E7]"
       }`}
     >
       {/* Logo */}
       <div className="flex items-center gap-3">
         <Link to="/" className="flex items-center">
-          <img src="../images/logo.png" alt="logo" className="h-16 w-auto" />
+          <img src="../images/logo.png" alt="logo" className="h-20 w-auto" />
         </Link>
       </div>
 
