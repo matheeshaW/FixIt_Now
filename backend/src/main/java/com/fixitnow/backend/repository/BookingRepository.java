@@ -1,16 +1,17 @@
 package com.fixitnow.backend.repository;
 
-import com.fixitnow.backend.model.Booking;
-import com.fixitnow.backend.model.Service;
-import com.fixitnow.backend.model.User;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import com.fixitnow.backend.model.Booking;
+import com.fixitnow.backend.model.Service;
+import com.fixitnow.backend.model.User;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -87,4 +88,3 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT COUNT(b) > 0 FROM Booking b WHERE b.service = :service AND b.bookingDate = :bookingDate AND b.status IN ('PENDING', 'CONFIRMED', 'IN_PROGRESS')")
     boolean existsConflictingBooking(@Param("service") Service service, @Param("bookingDate") LocalDateTime bookingDate);
 }
-
