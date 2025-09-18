@@ -22,7 +22,11 @@ export default function Navbar() {
       {/* Logo */}
       <div className="flex items-center gap-3">
         <Link to="/" className="flex items-center">
-          <img src="../images/logo.png" alt="logo" className="h-20 w-auto" />
+          <img
+            src="../images/NavbarLogo.png"
+            alt="logo"
+            className="h-20 w-auto"
+          />
         </Link>
       </div>
 
