@@ -2,7 +2,6 @@ package com.fixitnow.backend.controller;
 
 import com.fixitnow.backend.model.User;
 import com.fixitnow.backend.service.UserService;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,7 +30,7 @@ public class UserController {
 
     @PutMapping("/me")
     public ResponseEntity<User> updateProfile(@AuthenticationPrincipal UserDetails principal,
-                                              @RequestBody Map<String, String> payload) {
+            @RequestBody Map<String, String> payload) {
         String fullName = payload.getOrDefault("fullName", "");
         String phone = payload.getOrDefault("phone", "");
         User updated = userService.updateProfile(principal.getUsername(), fullName, phone);
@@ -40,7 +39,7 @@ public class UserController {
 
     @PostMapping("/me/reset-password")
     public ResponseEntity<Void> resetPassword(@AuthenticationPrincipal UserDetails principal,
-                                              @RequestBody Map<String, String> payload) {
+            @RequestBody Map<String, String> payload) {
         String newPassword = payload.get("newPassword");
         if (newPassword == null || newPassword.isBlank()) {
             return ResponseEntity.badRequest().build();
@@ -58,7 +57,8 @@ public class UserController {
 
     @PostMapping("/{userId}/reset-password")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> adminResetPassword(@PathVariable Long userId, @RequestBody Map<String, String> payload) {
+    public ResponseEntity<Void> adminResetPassword(@PathVariable Long userId,
+            @RequestBody Map<String, String> payload) {
         String newPassword = payload.get("newPassword");
         if (newPassword == null || newPassword.isBlank()) {
             return ResponseEntity.badRequest().build();
@@ -74,5 +74,3 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 }
-
-
