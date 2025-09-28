@@ -1,6 +1,7 @@
 package com.fixitnow.backend.config;
 
-import com.fixitnow.backend.security.JwtAuthenticationFilter;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,7 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import com.fixitnow.backend.security.JwtAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
@@ -46,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll() // login/register
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll() // allow GET categories
                         .requestMatchers("/api/services/**").permitAll() // allow browsing services
+                        .requestMatchers("/api/bookings/**").authenticated() // allow browsing bookings
                         .anyRequest().authenticated() // everything else requires authentication
                 )
                 .authenticationProvider(authenticationProvider())
