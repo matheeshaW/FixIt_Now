@@ -167,7 +167,7 @@ export default function CustomerDashboard() {
   if (loading) return <div className="max-w-6xl mx-auto p-6">Loading...</div>;
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-100 via-blue-200 to-blue-50 p-10">
+    <div className="min-h-screen w-full bg-gradient-to-br from-[#F8FAFC] via-[#EEF3F7] to-[#CBD5E1] p-10">
       <div className="max-w-6xl mx-auto p-6  bg-white rounded-3xl">
         <h1 className="text-3xl font-bold mb-6 text-blue-700">
           Customer Dashboard
@@ -351,9 +351,18 @@ export default function CustomerDashboard() {
 
                     {/* Buttons */}
                     <div className="mt-4 flex gap-2">
-                      <button 
-                        onClick={() => handleBookService(service)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+                      <button
+                        disabled={service.availabilityStatus !== "AVAILABLE"}
+                        title={
+                          service.availabilityStatus !== "AVAILABLE"
+                            ? "Service is unavailable"
+                            : "Book this service"
+                        }
+                        className={`bg-blue-600 text-white px-3 py-1 rounded text-sm transition ${
+                          service.availabilityStatus !== "AVAILABLE"
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:bg-blue-700"
+                        }`}
                       >
                         Book Now
                       </button>
@@ -422,9 +431,18 @@ export default function CustomerDashboard() {
 
                     {/* Buttons */}
                     <div className="mt-4 flex gap-2">
-                      <button 
-                        onClick={() => handleBookService(service)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+                      <button
+                        disabled={service.availabilityStatus !== "AVAILABLE"}
+                        title={
+                          service.availabilityStatus !== "AVAILABLE"
+                            ? "Service is unavailable"
+                            : "Book this service"
+                        }
+                        className={`bg-blue-600 text-white px-3 py-1 rounded text-sm transition ${
+                          service.availabilityStatus !== "AVAILABLE"
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:bg-blue-700"
+                        }`}
                       >
                         Book Now
                       </button>
@@ -436,7 +454,7 @@ export default function CustomerDashboard() {
                         }
                         className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition"
                       >
-                        Remove from Favorites
+                          Remove from Favorites
                       </button>
                     </div>
                   </div>
