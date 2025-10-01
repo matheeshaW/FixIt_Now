@@ -87,4 +87,42 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     // Check if there's a conflicting booking for the same service at the same time
     @Query("SELECT COUNT(b) > 0 FROM Booking b WHERE b.service = :service AND b.bookingDate = :bookingDate AND b.status IN ('PENDING', 'CONFIRMED', 'IN_PROGRESS')")
     boolean existsConflictingBooking(@Param("service") Service service, @Param("bookingDate") LocalDateTime bookingDate);
+
+    // Admin Reports: Revenue by day for last 30 days (COMPLETED only)
+    @Query(value = "SELECT DATE(booking_date) AS day, SUM(total_amount) AS revenue " +
+            "FROM bookings " +
+            "WHERE status = 'COMPLETED' AND booking_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) " +
+            "GROUP BY DATE(booking_date) " +
+            "ORDER BY day ASC", nativeQuery = true)
+    List<Object[]> findRevenueByDayLast30Days();
+
+    // Admin Reports: Booking status distribution
+    @Query(value = "SELECT status, COUNT(*) AS cnt FROM bookings GROUP BY status", nativeQuery = true)
+    List<Object[]> countBookingsByStatus();
+
+    // Admin Reports: Top 5 services by number of bookings
+    @Query(value = "SELECT s.service_title AS serviceTitle, COUNT(b.booking_id) AS cnt " +
+            "FROM bookings b JOIN services s ON b.service_id = s.service_id " +
+            "GROUP BY s.service_id, s.service_title " +
+            "ORDER BY cnt DESC LIMIT 5", nativeQuery = true)
+    List<Object[]> findTopServicesByBookings();
+
+    // Admin Reports: Top 5 providers by completed bookings and avg rating
+    @Query(value = "SELECT u.user_id AS providerId, u.full_name AS providerName, " +
+            "COUNT(CASE WHEN b.status = 'COMPLETED' THEN 1 END) AS completedCount, " +
+            "COALESCE(AVG(r.rating), 0) AS avgRating " +
+            "FROM users u " +
+            "JOIN services s ON s.provider_id = u.user_id " +
+            "LEFT JOIN bookings b ON b.service_id = s.service_id " +
+            "LEFT JOIN reviews r ON r.provider_id = u.user_id " +
+            "GROUP BY u.user_id, u.full_name " +
+            "ORDER BY completedCount DESC LIMIT 5", nativeQuery = true)
+    List<Object[]> findTopProviders();
+
+    // Admin Reports: Top 5 customers by total bookings
+    @Query(value = "SELECT u.full_name AS customerName, COUNT(b.booking_id) AS cnt " +
+            "FROM bookings b JOIN users u ON b.customer_id = u.user_id " +
+            "GROUP BY u.user_id, u.full_name " +
+            "ORDER BY cnt DESC LIMIT 5", nativeQuery = true)
+    List<Object[]> findTopCustomersByBookings();
 }

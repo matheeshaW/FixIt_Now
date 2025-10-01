@@ -3,6 +3,7 @@ import AdminUsers from "./AdminUsers";
 import CategoryPage from "./CategoryPage";
 import AdminBookingsPage from "./AdminBookingsPage";
 import { getRole } from "../utils/auth";
+import ReportsPage from "./admin/ReportsPage";
 
 export default function AdminDashboard() {
   const role = getRole();
@@ -49,6 +50,15 @@ export default function AdminDashboard() {
                   Categories
                 </span>
               </Link>
+              <Link
+                to="reports"
+                className="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 group"
+              >
+                <span className="text-xl">📊</span>
+                <span className="font-medium group-hover:translate-x-1 transition-transform duration-200">
+                  Reports
+                </span>
+              </Link>
             </nav>
           </div>
         </aside>
@@ -59,6 +69,7 @@ export default function AdminDashboard() {
             <Route path="users" element={<AdminUsers />} />
             <Route path="bookings" element={<AdminBookingsPage />} />
             <Route path="categories" element={<CategoryPage />} />
+            <Route path="reports" element={<ReportsPage />} />
             <Route
               index
               element={

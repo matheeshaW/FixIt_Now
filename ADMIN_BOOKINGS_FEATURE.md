@@ -96,3 +96,4 @@ The Admin Bookings feature is now fully integrated into the Admin Dashboard and 
 **Admin Dashboard → Sidebar → "Bookings" → View All Bookings**
 
 The feature provides comprehensive booking management capabilities for administrators to monitor and track all platform activity.
+
