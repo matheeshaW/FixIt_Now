@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import { getToken } from "../utils/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function CustomerBookings({ onBookingCancelled }) {
   const [bookings, setBookings] = useState([]);
@@ -9,6 +10,8 @@ export default function CustomerBookings({ onBookingCancelled }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchBookings();
@@ -96,6 +99,30 @@ export default function CustomerBookings({ onBookingCancelled }) {
       console.error("Error cancelling booking:", err);
       setError("Failed to cancel booking");
     }
+  };
+
+  const handleAddReview = (booking) => {
+    console.log('Booking object:', booking);
+    // Extract IDs from the booking object - now using correct field names from BookingSummaryResponse
+    const bookingId = booking.bookingId;
+    const providerId = booking.providerId;
+    const customerId = booking.customerId;
+    
+    console.log('Extracted IDs:', { bookingId, providerId, customerId });
+    
+    if (!bookingId || !providerId || !customerId) {
+      console.error('Missing required IDs for review:', { bookingId, providerId, customerId });
+      alert('Error: Missing booking information. Please try again.');
+      return;
+    }
+    
+    navigate("/reviews/add", {
+      state: {
+        bookingId,
+        providerId,
+        customerId,
+      },
+    });
   };
 
   const formatDate = (dateString) => {
@@ -253,6 +280,15 @@ export default function CustomerBookings({ onBookingCancelled }) {
                     Rs.{booking.totalAmount}
                   </p>
                   {getStatusActions(booking)}
+                  {/* Add Review Button for COMPLETED bookings */}
+                  {booking.status === "COMPLETED" && (
+                    <button
+                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition mt-2"
+                      onClick={() => handleAddReview(booking)}
+                    >
+                      Add Review
+                    </button>
+                  )}
                 </div>
               </div>
 

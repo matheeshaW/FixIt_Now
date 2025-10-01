@@ -43,6 +43,20 @@ public class JwtUtil {
                 .compact();
     }
 
+    public String generateToken(String username, String role, Long userId) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + jwtExpirationMs);
+
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("role", role)
+                .claim("userId", userId)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public boolean isTokenValid(String token, String username) {
         final String usernameFromToken = extractUsername(token);
         return (usernameFromToken.equals(username) && !isTokenExpired(token));

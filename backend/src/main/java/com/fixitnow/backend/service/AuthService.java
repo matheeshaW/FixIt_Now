@@ -46,7 +46,12 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(email, password)
         );
         String role = authentication.getAuthorities().stream().findFirst().orElseThrow().getAuthority().replace("ROLE_", "");
-        return jwtUtil.generateToken(email, role);
+        
+        // Get user ID for the JWT token
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        
+        return jwtUtil.generateToken(email, role, user.getUserId());
     }
 }
 

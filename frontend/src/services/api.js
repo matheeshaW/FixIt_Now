@@ -15,4 +15,10 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Review APIs
+export const addReview = (data) => api.post('/api/reviews', data);
+export const getProviderReviews = (providerId) => api.get(`/api/reviews/provider/${providerId}`);
+export const getCustomerReviews = (customerId) => api.get(`/api/reviews/customer/${customerId}`);
+export const getAllReviews = () => api.get('/api/reviews');
+
 export default api;
