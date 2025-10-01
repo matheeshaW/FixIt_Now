@@ -303,6 +303,17 @@ public class BookingService {
     }
 
     /**
+     * Get all bookings (Admin only)
+     */
+    @Transactional(readOnly = true)
+    public List<BookingResponse> getAllBookings() {
+        return bookingRepository.findAll()
+                .stream()
+                .map(BookingResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Validate status transition
      */
     private boolean isValidStatusTransition(Booking.BookingStatus currentStatus, Booking.BookingStatus newStatus) {

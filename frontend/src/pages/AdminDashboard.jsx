@@ -1,6 +1,7 @@
 import { Link, Routes, Route, Navigate } from "react-router-dom";
 import AdminUsers from "./AdminUsers";
 import CategoryPage from "./CategoryPage";
+import AdminBookingsPage from "./AdminBookingsPage";
 import { getRole } from "../utils/auth";
 
 export default function AdminDashboard() {
@@ -31,6 +32,15 @@ export default function AdminDashboard() {
                 </span>
               </Link>
               <Link
+                to="bookings"
+                className="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 group"
+              >
+                <span className="text-xl">📅</span>
+                <span className="font-medium group-hover:translate-x-1 transition-transform duration-200">
+                  Bookings
+                </span>
+              </Link>
+              <Link
                 to="categories"
                 className="flex items-center space-x-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 group"
               >
@@ -47,6 +57,7 @@ export default function AdminDashboard() {
         <main className="flex-1 p-8">
           <Routes>
             <Route path="users" element={<AdminUsers />} />
+            <Route path="bookings" element={<AdminBookingsPage />} />
             <Route path="categories" element={<CategoryPage />} />
             <Route
               index
@@ -62,7 +73,7 @@ export default function AdminDashboard() {
                       </p>
                     </div>
                     <div className="p-8">
-                      <div className="grid md:grid-cols-2 gap-6">
+                      <div className="grid md:grid-cols-3 gap-6">
                         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
                           <div className="flex items-center space-x-4">
                             <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
@@ -83,6 +94,29 @@ export default function AdminDashboard() {
                             className="inline-flex items-center mt-4 text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
                           >
                             Go to Users <span className="ml-1">→</span>
+                          </Link>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-purple-50 to-violet-50 p-6 rounded-xl border border-purple-200">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
+                              <span className="text-white text-2xl">📅</span>
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-semibold text-gray-800">
+                                Bookings
+                              </h3>
+                              <p className="text-gray-600">
+                                View all bookings, track status, and monitor
+                                platform activity
+                              </p>
+                            </div>
+                          </div>
+                          <Link
+                            to="bookings"
+                            className="inline-flex items-center mt-4 text-purple-600 hover:text-purple-800 font-medium transition-colors duration-200"
+                          >
+                            Go to Bookings <span className="ml-1">→</span>
                           </Link>
                         </div>
 
