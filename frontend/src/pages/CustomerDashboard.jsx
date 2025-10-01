@@ -3,6 +3,7 @@ import api from "../services/api";
 import { getToken } from "../utils/auth";
 import BookingForm from "../components/BookingForm";
 import CustomerBookings from "../components/CustomerBookings";
+import CustomerReviews from "../components/CustomerReviews";
 
 export default function CustomerDashboard() {
   const [activeTab, setActiveTab] = useState("browse");
@@ -175,7 +176,7 @@ export default function CustomerDashboard() {
 
         {/* Tabs */}
         <div className="flex border-b mb-6 gap-2">
-          {["browse", "favorites", "bookings"].map((tab) => (
+          {["browse", "favorites", "bookings", "reviews"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -185,7 +186,13 @@ export default function CustomerDashboard() {
                   : "text-gray-600 hover:text-blue-700"
               }`}
             >
-              {tab === "browse" ? "Browse Services" : tab === "favorites" ? "Favorites" : "My Bookings"}
+              {tab === "browse" 
+                ? "Browse Services" 
+                : tab === "favorites" 
+                ? "Favorites" 
+                : tab === "bookings"
+                ? "My Bookings"
+                : "My Reviews"}
             </button>
           ))}
         </div>
@@ -466,6 +473,11 @@ export default function CustomerDashboard() {
         {/* Bookings Tab */}
         {activeTab === "bookings" && (
           <CustomerBookings onBookingCancelled={handleBookingCancelled} />
+        )}
+
+        {/* Reviews Tab */}
+        {activeTab === "reviews" && (
+          <CustomerReviews />
         )}
       </div>
 

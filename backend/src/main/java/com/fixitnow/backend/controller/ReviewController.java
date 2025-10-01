@@ -51,11 +51,49 @@ public class ReviewController {
         return reviewService.getAllReviews();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateReview(@PathVariable Long id, @RequestBody UpdateReviewRequest request) {
+        try {
+            Review updatedReview = reviewService.updateReview(id, request.getRating(), request.getComment());
+            return ResponseEntity.ok(updatedReview);
+        } catch (ResponseStatusException ex) {
+            if (ex.getStatusCode() == HttpStatus.NOT_FOUND) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getReason());
+            }
+            if (ex.getStatusCode() == HttpStatus.FORBIDDEN) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getReason());
+            }
+            throw ex;
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long id) {
+        try {
+            reviewService.deleteReview(id);
+            return ResponseEntity.ok().build();
+        } catch (ResponseStatusException ex) {
+            if (ex.getStatusCode() == HttpStatus.NOT_FOUND) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getReason());
+            }
+            if (ex.getStatusCode() == HttpStatus.FORBIDDEN) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getReason());
+            }
+            throw ex;
+        }
+    }
+
     @Data
     public static class AddReviewRequest {
         private Long bookingId;
         private Long customerId;
         private Long providerId;
+        private int rating;
+        private String comment;
+    }
+
+    @Data
+    public static class UpdateReviewRequest {
         private int rating;
         private String comment;
     }
