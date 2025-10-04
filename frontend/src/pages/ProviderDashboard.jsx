@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
 import { getToken } from "../utils/auth";
+import ProviderBookings from "../components/ProviderBookings";
 
 export default function ProviderDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -180,7 +181,7 @@ export default function ProviderDashboard() {
 
         {/* Tabs */}
         <div className="flex border-b mb-6 gap-2">
-          {["dashboard", "services", "create"].map((tab) => (
+          {["dashboard", "services", "create", "bookings"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -194,7 +195,9 @@ export default function ProviderDashboard() {
                 ? "Dashboard"
                 : tab === "services"
                 ? "My Services"
-                : "Create Service"}
+                : tab === "create"
+                ? "Create Service"
+                : "Bookings"}
             </button>
           ))}
         </div>
@@ -471,6 +474,11 @@ export default function ProviderDashboard() {
               </button>
             </form>
           </div>
+        )}
+
+        {/* Bookings Tab */}
+        {activeTab === "bookings" && (
+          <ProviderBookings />
         )}
       </div>
     </div>

@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import { getToken } from "../utils/auth";
+import BookingForm from "../components/BookingForm";
+import CustomerBookings from "../components/CustomerBookings";
 
 export default function CustomerDashboard() {
   const [activeTab, setActiveTab] = useState("browse");
@@ -16,6 +19,9 @@ export default function CustomerDashboard() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedService, setSelectedService] = useState(null);
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [bookedServiceIds, setBookedServiceIds] = useState(new Set());
 
   const allProvinces = [
     "Central Province",
@@ -33,6 +39,7 @@ export default function CustomerDashboard() {
     fetchServices();
     fetchCategories();
     fetchProvinces();
+    fetchMyActiveBookings();
   }, []);
 
   const fetchServices = async () => {
@@ -67,6 +74,25 @@ export default function CustomerDashboard() {
     }
   };
 
+  const fetchMyActiveBookings = async () => {
+    try {
+      const token = getToken();
+      if (!token) return;
+      const res = await api.get("/api/bookings/customer", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const activeStatuses = new Set(["PENDING", "CONFIRMED", "IN_PROGRESS"]);
+      const activeServiceIds = new Set(
+        (res.data || [])
+          .filter((b) => activeStatuses.has(b.status))
+          .map((b) => b.serviceId)
+      );
+      setBookedServiceIds(activeServiceIds);
+    } catch (err) {
+      // silently ignore for browse tab
+    }
+  };
+
   const toggleFavorite = (serviceId) => {
     if (favorites.includes(serviceId)) {
       // Remove from favorites
@@ -75,6 +101,38 @@ export default function CustomerDashboard() {
       // Add to favorites
       setFavorites([...favorites, serviceId]);
     }
+  };
+
+  const handleBookService = (service) => {
+    setSelectedService(service);
+    setShowBookingForm(true);
+  };
+
+  const handleBookingCreated = (created) => {
+    // created may be undefined from child; refetch to be safe
+    if (created?.serviceId) {
+      setBookedServiceIds((prev) => new Set(prev).add(created.serviceId));
+    } else {
+      fetchMyActiveBookings();
+    }
+    setActiveTab("bookings");
+  };
+
+  const handleBookingCancelled = (cancelled) => {
+    if (cancelled?.serviceId) {
+      setBookedServiceIds((prev) => {
+        const next = new Set(prev);
+        next.delete(cancelled.serviceId);
+        return next;
+      });
+    } else {
+      fetchMyActiveBookings();
+    }
+  };
+
+  const handleCloseBookingForm = () => {
+    setShowBookingForm(false);
+    setSelectedService(null);
   };
 
   const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
@@ -95,12 +153,14 @@ export default function CustomerDashboard() {
         s.serviceDescription.toLowerCase().includes(searchQuery.toLowerCase())
       : true;
 
+    const notAlreadyBooked = !bookedServiceIds.has(s.serviceId);
     return (
       categoryMatch &&
       provinceMatch &&
       priceMatch &&
       availabilityMatch &&
-      searchMatch
+      searchMatch &&
+      notAlreadyBooked
     );
   });
 
@@ -115,7 +175,7 @@ export default function CustomerDashboard() {
 
         {/* Tabs */}
         <div className="flex border-b mb-6 gap-2">
-          {["browse", "favorites"].map((tab) => (
+          {["browse", "favorites", "bookings"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -125,7 +185,7 @@ export default function CustomerDashboard() {
                   : "text-gray-600 hover:text-blue-700"
               }`}
             >
-              {tab === "browse" ? "Browse Services" : "Favorites"}
+              {tab === "browse" ? "Browse Services" : tab === "favorites" ? "Favorites" : "My Bookings"}
             </button>
           ))}
         </div>
@@ -291,18 +351,9 @@ export default function CustomerDashboard() {
 
                     {/* Buttons */}
                     <div className="mt-4 flex gap-2">
-                      <button
-                        disabled={service.availabilityStatus !== "AVAILABLE"}
-                        title={
-                          service.availabilityStatus !== "AVAILABLE"
-                            ? "Service is unavailable"
-                            : "Book this service"
-                        }
-                        className={`bg-blue-600 text-white px-3 py-1 rounded text-sm transition ${
-                          service.availabilityStatus !== "AVAILABLE"
-                            ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-blue-700"
-                        }`}
+                      <button 
+                        onClick={() => handleBookService(service)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
                       >
                         Book Now
                       </button>
@@ -371,18 +422,9 @@ export default function CustomerDashboard() {
 
                     {/* Buttons */}
                     <div className="mt-4 flex gap-2">
-                      <button
-                        disabled={service.availabilityStatus !== "AVAILABLE"}
-                        title={
-                          service.availabilityStatus !== "AVAILABLE"
-                            ? "Service is unavailable"
-                            : "Book this service"
-                        }
-                        className={`bg-blue-600 text-white px-3 py-1 rounded text-sm transition ${
-                          service.availabilityStatus !== "AVAILABLE"
-                            ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-blue-700"
-                        }`}
+                      <button 
+                        onClick={() => handleBookService(service)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
                       >
                         Book Now
                       </button>
@@ -402,7 +444,21 @@ export default function CustomerDashboard() {
             )}
           </div>
         )}
+
+        {/* Bookings Tab */}
+        {activeTab === "bookings" && (
+          <CustomerBookings onBookingCancelled={handleBookingCancelled} />
+        )}
       </div>
+
+      {/* Booking Form Modal */}
+      {showBookingForm && (
+        <BookingForm
+          service={selectedService}
+          onBookingCreated={handleBookingCreated}
+          onClose={handleCloseBookingForm}
+        />
+      )}
     </div>
   );
 }
