@@ -167,7 +167,7 @@ export default function CustomerDashboard() {
   if (loading) return <div className="max-w-6xl mx-auto p-6">Loading...</div>;
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-100 via-blue-200 to-blue-50 p-10">
+    <div className="min-h-screen w-full bg-gradient-to-br from-[#F8FAFC] via-[#EEF3F7] to-[#CBD5E1] p-10">
       <div className="max-w-6xl mx-auto p-6  bg-white rounded-3xl">
         <h1 className="text-3xl font-bold mb-6 text-blue-700">
           Customer Dashboard

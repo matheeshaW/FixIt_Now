@@ -173,9 +173,9 @@ export default function ProviderDashboard() {
   if (loading) return <div className="max-w-6xl mx-auto p-6">Loading...</div>;
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-green-100 via-green-200 to-green-50 p-10">
-      <div className="max-w-6xl mx-auto p-6 bg-white rounded-3xl">
-        <h1 className="text-3xl font-bold mb-6 text-green-700">
+    <div className="min-h-screen w-full bg-gradient-to-br from-[#0A0A0B] via-[#0F172A] to-[#0B1220] text-[#ffffff] p-10">
+      <div className="max-w-6xl mx-auto p-6 bg-[#111827] rounded-3xl border border-[#1F2937] shadow">
+        <h1 className="text-3xl font-bold mb-6 text-white">
           Provider Dashboard
         </h1>
 
@@ -187,8 +187,8 @@ export default function ProviderDashboard() {
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 font-medium rounded-t-lg transition ${
                 activeTab === tab
-                  ? "bg-green-100 border-b-0 text-green-800"
-                  : "text-gray-600 hover:text-green-700"
+                  ? "bg-[#1F2937] border-b-0 text-white"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
               {tab === "dashboard"
@@ -204,12 +204,12 @@ export default function ProviderDashboard() {
 
         {/* Messages */}
         {message && activeTab === "services" && (
-          <div className="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded mb-4 shadow">
+          <div className="bg-[#0F172A] border border-[#1F2937] text-green-300 px-4 py-3 rounded mb-4 shadow">
             {message}
           </div>
         )}
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 shadow">
+          <div className="bg-[#0F172A] border border-[#1F2937] text-red-300 px-4 py-3 rounded mb-4 shadow">
             {error}
           </div>
         )}
@@ -217,30 +217,30 @@ export default function ProviderDashboard() {
         {/* Dashboard Tab */}
         {activeTab === "dashboard" && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-green-100 rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+            <div className="bg-[#0F172A] border border-[#1F2937] rounded-2xl p-5 shadow-sm">
+              <h3 className="text-lg font-semibold text-white mb-2">
                 Total Services
               </h3>
-              <p className="text-3xl font-bold text-green-700">
+              <p className="text-3xl font-bold text-[#c6c4c4]">
                 {services.length}
               </p>
             </div>
-            <div className="bg-green-100 rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+            <div className="bg-[#0F172A] border border-[#1F2937] rounded-2xl p-5 shadow-sm">
+              <h3 className="text-lg font-semibold text-white mb-2">
                 Available Services
               </h3>
-              <p className="text-3xl font-bold text-green-600">
+              <p className="text-3xl font-bold text-[#c6c4c4]">
                 {
                   services.filter((s) => s.availabilityStatus === "AVAILABLE")
                     .length
                 }
               </p>
             </div>
-            <div className="bg-green-100 rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                Total Revenue
+            <div className="bg-[#0F172A] border border-[#1F2937] rounded-2xl p-5 shadow-sm">
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Total Service Value
               </h3>
-              <p className="text-3xl font-bold text-green-800">
+              <p className="text-3xl font-bold text-green-500">
                 Rs.
                 {services
                   .reduce((sum, s) => sum + parseFloat(s.price), 0)
@@ -250,20 +250,20 @@ export default function ProviderDashboard() {
 
             {/* Recent Services */}
             <div className="col-span-full  p-6 rounded shadow">
-              <h3 className="text-xl font-semibold mb-4 text-green-700">
+              <h3 className="text-xl font-semibold mb-4 text-white">
                 Recent Services
               </h3>
               {services.length === 0 ? (
-                <p className="text-gray-500">No services created yet.</p>
+                <p className="text-white">No services created yet.</p>
               ) : (
                 <div className="space-y-3">
                   {services.slice(0, 3).map((service) => (
                     <div
                       key={service.serviceId}
-                      className="flex justify-between items-center p-4 bg-green-100 rounded-lg shadow hover:bg-green-200 transition"
+                      className="flex justify-between items-center p-4 bg-[#0F172A] border border-[#1F2937] rounded-lg shadow hover:bg-[#1F2937] transition"
                     >
                       <div className="flex-1">
-                        <h4 className="font-medium text-gray-800">
+                        <h4 className="font-medium text-white">
                           {service.serviceTitle}
                         </h4>
                         <p className="text-sm text-gray-600">
@@ -271,14 +271,14 @@ export default function ProviderDashboard() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold text-green-700">
+                        <p className="font-semibold text-green-500">
                           Rs.{service.price}
                         </p>
                         <span
                           className={`text-xs px-2 py-1 rounded ${
                             service.availabilityStatus === "AVAILABLE"
-                              ? " text-green-800"
-                              : " text-red-600"
+                              ? " text-green-500"
+                              : " text-red-500"
                           }`}
                         >
                           {service.availabilityStatus}
@@ -296,21 +296,21 @@ export default function ProviderDashboard() {
         {activeTab === "services" && (
           <div className="space-y-4">
             {services.length === 0 ? (
-              <p className="text-gray-500">
+              <p className="text-white">
                 No services created yet. Create your first service!
               </p>
             ) : (
               services.map((service) => (
                 <div
                   key={service.serviceId}
-                  className="bg-green-100 rounded-lg shadow p-4 hover:shadow-lg transition"
+                  className="bg-[#0F172A] border border-[#1F2937] rounded-lg shadow p-4 hover:bg-[#1F2937] transition"
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-800">
+                      <h3 className="text-lg font-semibold text-white">
                         {service.serviceTitle}
                       </h3>
-                      <p className="text-gray-600 mb-2">
+                      <p className="text-[#b6b5b5] mb-2">
                         {service.serviceDescription}
                       </p>
                       <div className="flex gap-4 text-sm text-gray-500">
@@ -319,14 +319,14 @@ export default function ProviderDashboard() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-green-700">
+                      <p className="text-2xl font-bold text-green-500">
                         Rs.{service.price}
                       </p>
                       <span
                         className={`px-2 py-1 rounded text-xs ${
                           service.availabilityStatus === "AVAILABLE"
-                            ? " text-green-800"
-                            : " text-red-600"
+                            ? " text-green-500"
+                            : " text-red-500"
                         }`}
                       >
                         {service.availabilityStatus}
@@ -336,7 +336,7 @@ export default function ProviderDashboard() {
                   <div className="mt-4 flex gap-2">
                     <button
                       onClick={() => handleToggleStatus(service.serviceId)}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition"
+                      className="bg-yellow-300 hover:bg-yellow-400 text-black px-3 py-1 rounded transition"
                     >
                       Toggle Status
                     </button>
@@ -355,20 +355,22 @@ export default function ProviderDashboard() {
 
         {/* Create Service Tab */}
         {activeTab === "create" && (
-          <div className="bg-white shadow rounded p-6">
-            <h2 className="text-xl font-semibold mb-4 text-green-700">
+          <div className="bg-[#0F172A] border border-[#1F2937] shadow rounded p-6">
+            <h2 className="text-xl font-semibold mb-4 text-white">
               Create New Service
             </h2>
             <form onSubmit={handleCreateService} className="space-y-4">
               <div>
-                <label className="block text-sm mb-1">Service Title *</label>
+                <label className="block text-sm mb-1">
+                  Service Title <span className="text-red-400">*</span>
+                </label>
                 <input
                   type="text"
                   name="serviceTitle"
                   value={formData.serviceTitle}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
                   placeholder="Enter service title"
+                  className="w-full bg-[#1b232e] border border-[#2a3b53] p-2 rounded placeholder-gray-400 focus:ring-2 focus:ring-green-300 focus:outline-none"
                   required
                   maxLength={150}
                 />
@@ -379,7 +381,7 @@ export default function ProviderDashboard() {
                   name="serviceDescription"
                   value={formData.serviceDescription}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
+                  className="w-full bg-[#1b232e] border border-[#2a3b53] p-2 rounded placeholder-gray-400 focus:ring-2 focus:ring-green-300 focus:outline-none"
                   rows="4"
                   placeholder="Describe your service"
                   maxLength={1000}
@@ -387,19 +389,24 @@ export default function ProviderDashboard() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm mb-1">Category *</label>
+                  <label className="block text-sm mb-1">
+                    Category <span className="text-red-400">*</span>
+                  </label>
                   <select
                     name="categoryId"
                     value={formData.categoryId}
                     onChange={handleInputChange}
-                    className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
+                    className="w-full bg-[#1b232e] border border-[#2a3b53] p-2 rounded text-white focus:ring-2 focus:ring-green-300 focus:outline-none"
                     required
                   >
-                    <option value="">Select category</option>
+                    <option value="" disabled className=" text-gray-400">
+                      Select category
+                    </option>
                     {categories.map((category) => (
                       <option
                         key={category.categoryId}
                         value={category.categoryId}
+                        className="text-white"
                       >
                         {category.categoryName}
                       </option>
@@ -407,13 +414,15 @@ export default function ProviderDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm mb-1">Price (Rs.) *</label>
+                  <label className="block text-sm mb-1">
+                    Price (Rs.) <span className="text-red-400">*</span>
+                  </label>
                   <input
                     type="number"
                     name="price"
                     value={formData.price}
                     onChange={handleInputChange}
-                    className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
+                    className="w-full bg-[#1b232e] border border-[#2a3b53] p-2 rounded placeholder-gray-400 focus:ring-2 focus:ring-green-300 focus:outline-none"
                     placeholder="0.00"
                     step="0.01"
                     min="0.01"
@@ -422,15 +431,19 @@ export default function ProviderDashboard() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm mb-1">Province *</label>
+                <label className="block text-sm mb-1">
+                  Province <span className="text-red-400">*</span>
+                </label>
                 <select
                   name="province"
                   value={formData.province}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
+                  className="w-full bg-[#1b232e] border border-[#2a3b53] p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
                   required
                 >
-                  <option value="">Select province</option>
+                  <option value="" disabled className=" text-gray-400">
+                    Select province
+                  </option>
                   {provinces.map((province) => (
                     <option key={province} value={province}>
                       {province}
@@ -446,7 +459,7 @@ export default function ProviderDashboard() {
                   name="availabilityStatus"
                   value={formData.availabilityStatus}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
+                  className="w-full bg-[#1b232e] border border-[#2a3b53] p-2 rounded focus:ring-2 focus:ring-green-300 focus:outline-none"
                 >
                   <option value="AVAILABLE">Available</option>
                   <option value="UNAVAILABLE">Unavailable</option>
