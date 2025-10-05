@@ -159,6 +159,7 @@ public class ServiceController {
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         private BigDecimal price;
         private String availabilityStatus;
+        private Long providerId;
         private String providerName;
         private String createdAt;
         private String province;
@@ -172,6 +173,7 @@ public class ServiceController {
             this.price = service.getPrice();
             this.availabilityStatus = service.getAvailabilityStatus() != null ? service.getAvailabilityStatus().name()
                     : "UNKNOWN";
+            this.providerId = service.getProvider() != null ? service.getProvider().getUserId() : null;
             this.providerName = service.getProvider() != null ? service.getProvider().getFullName() : "Unknown";
             this.createdAt = service.getCreatedAt() != null ? service.getCreatedAt().toString() : "";
             this.province = service.getProvince();
@@ -200,6 +202,10 @@ public class ServiceController {
 
         public String getAvailabilityStatus() {
             return availabilityStatus;
+        }
+
+        public Long getProviderId() {
+            return providerId;
         }
 
         public String getProviderName() {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { getToken } from "../utils/auth";
 import BookingForm from "../components/BookingForm";
@@ -6,6 +7,7 @@ import CustomerBookings from "../components/CustomerBookings";
 import CustomerReviews from "../components/CustomerReviews";
 
 export default function CustomerDashboard() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("browse");
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -372,6 +374,19 @@ export default function CustomerDashboard() {
                         }`}
                       >
                         Book Now
+                      </button>
+                      <button
+                        onClick={() =>
+                          navigate("/customer/service-reviews", {
+                            state: {
+                              providerId: service.providerId,
+                              providerName: service.providerName,
+                            },
+                          })
+                        }
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm transition"
+                      >
+                        Reviews
                       </button>
                       <button
                         onClick={() => toggleFavorite(service.serviceId)}
