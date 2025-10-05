@@ -360,18 +360,9 @@ export default function CustomerDashboard() {
 
                     {/* Buttons */}
                     <div className="mt-4 flex gap-2">
-                      <button
-                        disabled={service.availabilityStatus !== "AVAILABLE"}
-                        title={
-                          service.availabilityStatus !== "AVAILABLE"
-                            ? "Service is unavailable"
-                            : "Book this service"
-                        }
-                        className={`bg-blue-600 text-white px-3 py-1 rounded text-sm transition ${
-                          service.availabilityStatus !== "AVAILABLE"
-                            ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-blue-700"
-                        }`}
+                      <button 
+                        onClick={() => handleBookService(service)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
                       >
                         Book Now
                       </button>
@@ -453,18 +444,9 @@ export default function CustomerDashboard() {
 
                     {/* Buttons */}
                     <div className="mt-4 flex gap-2">
-                      <button
-                        disabled={service.availabilityStatus !== "AVAILABLE"}
-                        title={
-                          service.availabilityStatus !== "AVAILABLE"
-                            ? "Service is unavailable"
-                            : "Book this service"
-                        }
-                        className={`bg-blue-600 text-white px-3 py-1 rounded text-sm transition ${
-                          service.availabilityStatus !== "AVAILABLE"
-                            ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-blue-700"
-                        }`}
+                      <button 
+                        onClick={() => handleBookService(service)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
                       >
                         Book Now
                       </button>
