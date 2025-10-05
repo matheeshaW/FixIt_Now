@@ -316,4 +316,19 @@ public class BookingController {
                     .body("Error completing booking: " + e.getMessage());
         }
     }
+
+    /**
+     * Get all bookings (Admin only)
+     */
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getAllBookings(@RequestHeader("Authorization") String token) {
+        try {
+            List<BookingResponse> bookings = bookingService.getAllBookings();
+            return ResponseEntity.ok(bookings);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error fetching all bookings: " + e.getMessage());
+        }
+    }
 }

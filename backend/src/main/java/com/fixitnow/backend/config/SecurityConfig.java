@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll() // allow GET categories
                         .requestMatchers("/api/services/**").permitAll() // allow browsing services
                         .requestMatchers("/api/bookings/**").authenticated() // allow browsing bookings
+                        .requestMatchers("/api/reviews/**").authenticated() // allow reviews for authenticated users
                         .anyRequest().authenticated() // everything else requires authentication
                 )
                 .authenticationProvider(authenticationProvider())

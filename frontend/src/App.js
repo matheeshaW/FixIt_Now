@@ -8,6 +8,10 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import CustomerDashboard from "./pages/CustomerDashboard";
+import AddReviewPage from "./pages/reviews/AddReviewPage";
+import ProviderReviewsPage from "./pages/reviews/ProviderReviewsPage";
+import CustomerReviewsPage from "./pages/reviews/CustomerReviewsPage";
+import ServiceReviewsPage from "./pages/ServiceReviewsPage";
 
 function App() {
   return (
@@ -72,6 +76,10 @@ function App() {
             <Route path="/admin/*" element={<AdminDashboard />} />
             <Route path="/provider/*" element={<ProviderDashboard />} />
             <Route path="/customer/*" element={<CustomerDashboard />} />
+            <Route path="/customer/service-reviews" element={<ServiceReviewsPage />} />
+            <Route path="/reviews/add" element={<AddReviewPage />} />
+            <Route path="/reviews/provider" element={<ProviderReviewsPage />} />
+            <Route path="/reviews/customer" element={<CustomerReviewsPage />} />
           </Routes>
         </main>
         <Footer />

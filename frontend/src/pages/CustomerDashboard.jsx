@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { getToken } from "../utils/auth";
 import BookingForm from "../components/BookingForm";
 import CustomerBookings from "../components/CustomerBookings";
+import CustomerReviews from "../components/CustomerReviews";
 
 export default function CustomerDashboard() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("browse");
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -175,7 +178,7 @@ export default function CustomerDashboard() {
 
         {/* Tabs */}
         <div className="flex border-b mb-6 gap-2">
-          {["browse", "favorites", "bookings"].map((tab) => (
+          {["browse", "favorites", "bookings", "reviews"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -185,7 +188,13 @@ export default function CustomerDashboard() {
                   : "text-gray-600 hover:text-blue-700"
               }`}
             >
-              {tab === "browse" ? "Browse Services" : tab === "favorites" ? "Favorites" : "My Bookings"}
+              {tab === "browse" 
+                ? "Browse Services" 
+                : tab === "favorites" 
+                ? "Favorites" 
+                : tab === "bookings"
+                ? "My Bookings"
+                : "My Reviews"}
             </button>
           ))}
         </div>
@@ -358,6 +367,19 @@ export default function CustomerDashboard() {
                         Book Now
                       </button>
                       <button
+                        onClick={() =>
+                          navigate("/customer/service-reviews", {
+                            state: {
+                              providerId: service.providerId,
+                              providerName: service.providerName,
+                            },
+                          })
+                        }
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm transition"
+                      >
+                        Reviews
+                      </button>
+                      <button
                         onClick={() => toggleFavorite(service.serviceId)}
                         className={`px-3 py-1 rounded text-sm transition ${
                           favorites.includes(service.serviceId)
@@ -436,7 +458,7 @@ export default function CustomerDashboard() {
                         }
                         className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition"
                       >
-                        Remove from Favorites
+                          Remove from Favorites
                       </button>
                     </div>
                   </div>
@@ -448,6 +470,11 @@ export default function CustomerDashboard() {
         {/* Bookings Tab */}
         {activeTab === "bookings" && (
           <CustomerBookings onBookingCancelled={handleBookingCancelled} />
+        )}
+
+        {/* Reviews Tab */}
+        {activeTab === "reviews" && (
+          <CustomerReviews />
         )}
       </div>
 

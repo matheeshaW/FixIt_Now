@@ -126,8 +126,11 @@ public class BookingDtos {
     // Simplified response DTO for listing bookings
     public record BookingSummaryResponse(
             Long bookingId,
+            Long customerId,
+            Long providerId,
             String serviceTitle,
             String providerName,
+            String providerEmail,
             String categoryName,
             @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
             LocalDateTime bookingDate,
@@ -140,9 +143,14 @@ public class BookingDtos {
         public BookingSummaryResponse(Booking booking) {
             this(
                     booking.getBookingId(),
+                    booking.getCustomer() != null ? booking.getCustomer().getUserId() : null,
+                    booking.getService() != null && booking.getService().getProvider() != null 
+                            ? booking.getService().getProvider().getUserId() : null,
                     booking.getService() != null ? booking.getService().getServiceTitle() : "Unknown",
                     booking.getService() != null && booking.getService().getProvider() != null 
                             ? booking.getService().getProvider().getFullName() : "Unknown",
+                    booking.getService() != null && booking.getService().getProvider() != null 
+                            ? booking.getService().getProvider().getEmail() : "Unknown",
                     booking.getService() != null && booking.getService().getCategory() != null 
                             ? booking.getService().getCategory().getCategoryName() : "Unknown",
                     booking.getBookingDate(),

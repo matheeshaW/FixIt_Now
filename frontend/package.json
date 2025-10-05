@@ -15,7 +15,8 @@
     "web-vitals": "^2.1.4",
     "tailwindcss": "^3.4.13",
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.41"
+    "postcss": "^8.4.41",
+    "recharts": "^2.12.7"
   },
   "scripts": {
     "start": "react-scripts start",
