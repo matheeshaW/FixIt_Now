@@ -40,6 +40,22 @@ export default function Navbar() {
             >
               Profile
             </Link>
+              {role === "CUSTOMER" && (
+                <Link
+                  to="/customer"
+                  className="text-white hover:text-gray-100 transition font-medium"
+                >
+                  Customer Dashboard
+                </Link>
+              )}
+              {role === "PROVIDER" && (
+                <Link
+                  to="/provider"
+                  className="text-white hover:text-gray-100 transition font-medium"
+                >
+                  Provider Dashboard
+                </Link>
+              )}
             {role === "ADMIN" && (
               <Link
                 to="/admin"

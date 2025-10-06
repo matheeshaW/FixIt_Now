@@ -34,7 +34,7 @@ function App() {
                       skilled professionals or offer your services to help
                       others in your community.
                     </p>
-                    <div className="grid md:grid-cols-3 gap-8 mt-12">
+                    <div className="grid md:grid-cols-4 gap-8 mt-12">
                       <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
                         <div className="text-4xl mb-4">🔧</div>
                         <h3 className="text-xl font-semibold text-gray-800 mb-2">
@@ -65,6 +65,19 @@ function App() {
                           peace of mind.
                         </p>
                       </div>
+                        <a
+                          href="/customer"
+                          className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-center cursor-pointer border border-blue-200"
+                          style={{ textDecoration: 'none' }}
+                        >
+                          <div className="text-4xl mb-4">➡️</div>
+                          <h3 className="text-xl font-semibold text-blue-700 mb-2">
+                            Browse Services Now
+                          </h3>
+                          <p className="text-gray-600">
+                            Explore available services and book instantly.
+                          </p>
+                        </a>
                     </div>
                   </div>
                 </div>
